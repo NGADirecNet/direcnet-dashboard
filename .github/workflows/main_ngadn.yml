@@ -31,5 +31,5 @@ jobs:
       with:
         app-name: 'ngadn'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_da0ae9b59bff4ce0841462ee68e0afd0 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_c5bae2b88ee241c28c9b58db6352db92 }}
         package: .
