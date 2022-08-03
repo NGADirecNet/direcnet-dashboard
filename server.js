@@ -18,7 +18,7 @@ app.use('/api', index);
 // the asterisk is very important!! as it allows client side routing
 // with react-router or w/e client side routing package you use
 app.get('/*', (req, res) => {
-  res.sendFile('index.html', { root: __dirname /*+ '/client/mern_azure_example/build/'*/ });
+  res.sendFile('index.html', { root: __dirname + '/client/loggingapp/build/' });
 });
 
 const { PORT } = process.env;
