@@ -275,7 +275,7 @@ const TestView = (props) => {
                     </div>
                     <div className='h-1/2 py-5 px-2'>
                         <p className='text-xl font-semibold mb-5 pb-5 border-b-1'>Current Scenario: {selectedScenario}</p>
-                        <p className='text-xl font-semibold mb-1'>Important Times</p>
+                        {/* <p className='text-xl font-semibold mb-1'>Important Times</p>
                         {time && time.map((t, idx) => {
                             if (idx === time.length - 1)
                                 return (
@@ -307,7 +307,7 @@ const TestView = (props) => {
                                 />
                             )
                         })
-                        }
+                        } */}
                         {weather &&
                             getWeather(weather)
                         }
