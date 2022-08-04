@@ -4,7 +4,7 @@ import { useStateContext } from '../../contexts/ContextProvider';
 
 const LineChart = ({ series, xAxis, yAxis, y2Data }) => {
   const { currentMode } = useStateContext();
-  console.log("y2 data", y2Data)
+  
   return (
     <ChartComponent
       id="line-chart"

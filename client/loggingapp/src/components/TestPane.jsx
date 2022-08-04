@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { RiArrowDropDownLine, RiArrowDropRightLine } from 'react-icons/ri';
 import EditableTextField from './EditableTextField';
-import { IoMdAdd, IoMdRemoveCircle } from 'react-icons/io';
-import { useStateContext } from '../contexts/ContextProvider';
 import PaneNode from './PaneNode';
 import PaneEvent from './PaneEvent';
+import { newEvent, newNode, newPane } from '../data/contants';
+import AddButton from './AddButton';
+import RemoveButton from './RemoveButton';
 
 export function DropdownButton({ state, setState, alwaysHidden }) {
     const [hovering, setHovering] = useState(false);
@@ -27,35 +28,7 @@ export function DropdownButton({ state, setState, alwaysHidden }) {
     )
 }
 
-export function RemoveButton({ onClick }) {
-    const { currentColor } = useStateContext();
-    return (
-        <button
-            type="button"
-            style={{ color: currentColor }}
-            className="text-lg hover:drop-shadow-xl text-white rounded-full p-3"
-            onClick={onClick}
-        >
-            <IoMdRemoveCircle />
-        </button>
-    )
-}
-
-export function AddButton({ onClick, showing }) {
-    const { currentColor } = useStateContext();
-    return (
-        <button
-            type="button"
-            style={{ color: showing ? currentColor : '' }}
-            className="text-lg hover:bg-light-gray text-white rounded-lg p-2 m-1"
-            onClick={onClick}
-        >
-            <IoMdAdd />
-        </button>
-    )
-}
-
-export default function TestPane({ test, isSelected, setSelected, newPane = false, testSuite, setTest, saved, setSaved }) {
+export default function TestPane({ scenario, isSelected, setSelected, isNewPane = false, testSuite, setTest, saved, setSaved }) {
     // by default keep in depth steps opened
     const [showSteps, setShowSteps] = useState(true);
     // by default keep timeline opened
@@ -68,39 +41,29 @@ export default function TestPane({ test, isSelected, setSelected, newPane = fals
     const [showingAddNode, showAddNode] = useState(false);
     // show or hide the option to add a new event to timeline portion of the Pane
     const [showingAddEvent, showAddEvent] = useState(false);
+    // display red border/shadow/button when hovering over RemoveButton
+    const [removeHover, setRemoveHover] = useState(false);
     // represents either test data, or a new pane
     const [pane, setPane] = useState({})
 
     useEffect(() => {
-        if (test) {
-            setPane(test)
+        if (scenario) {
+            setPane(scenario)
         }
-    }, [test])
+    }, [scenario])
 
     // add a Pane to test suite, appending (x) to already new panes
     const addPane = () => {
         // find new panes that already exist
-        const newPanes = testSuite.timeline.filter(t => t.header.includes("New Header"))
+        const newPanes = testSuite.timeline.filter(t => t.header.includes("New Scenario Header"))
         // append copy string to header so we do not have duplicate panes selected
         var copyString = newPanes.length ? ` (${newPanes.length})` : ""
         // create our new pane
-        const newPane = {
-            header: "New Header" + copyString,
-            subheader: "New Subheader",
-            setup: [{
-                name: "New Node",
-                description: "Node setup"
-            }],
-            events: [{
-                time: "00:00 AM",
-                description: "New event"
-            }],
-            attachments: []
-        }
+        const addNewPane = {...newPane, header : newPane.header + copyString }
         // add new pane to our test suite
         setTest({
             ...testSuite,
-            timeline: [...testSuite.timeline, newPane]
+            timeline: [...testSuite.timeline, addNewPane]
         })
         setSaved(false)
         // set selected pane to newly created pane
@@ -152,7 +115,7 @@ export default function TestPane({ test, isSelected, setSelected, newPane = fals
     const addNode = () => {
         setTest({
             ...testSuite,
-            timeline: testSuite.timeline.map(t => (t === pane ? { ...t, setup: [...t.setup, { name: "New Node", description: "Node setup" }] } : t))
+            timeline: testSuite.timeline.map(t => (t === pane ? { ...t, setup: [...t.setup, newNode] } : t))
         })
         setSaved(false);
     }
@@ -166,16 +129,14 @@ export default function TestPane({ test, isSelected, setSelected, newPane = fals
     }
 
     const addEvent = () => {
-        console.log("event added");
         setTest({
             ...testSuite,
-            timeline: testSuite.timeline.map(t => (t === pane ? { ...t, events: [...t.events, { time: "00:00 AM", description: "New event" }] } : t))
+            timeline: testSuite.timeline.map(t => (t === pane ? { ...t, events: [...t.events, newEvent] } : t))
         })
         setSaved(false);
     }
 
     const removeEvent = (idx) => {
-        console.log("event removed");
         setTest({
             ...testSuite,
             timeline: testSuite.timeline.map(t => (t === pane ? { ...t, events: t.events.filter((n, i) => i !== idx) } : t))
@@ -183,21 +144,17 @@ export default function TestPane({ test, isSelected, setSelected, newPane = fals
         setSaved(false);
     }
 
-    return newPane ? (
+    return isNewPane ? (
         <div
             className={`m-2 p-4 border-1 rounded-2xl ${isSelected ? 'shadow-lg cursor-default' : 'shadow-sm cursor-pointer'}`}
-            onClick={addPane}
         >
-            <div
-                className='flex justify-center p-3 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray m-1'
-            >
-                <IoMdAdd />
-            </div>
+            <AddButton onClick={addPane} />
         </div>
     ) : (
         <div
-            className={`m-2 p-4 border-1 rounded-2xl ${isSelected ? 'shadow-lg cursor-default' : 'shadow-sm cursor-pointer'}`}
-            onClick={() => setSelected(pane)}>
+            className={`m-2 p-4 border-1 rounded-2xl ${isSelected ? 'shadow-lg cursor-default' :  `cursor-pointer ${removeHover ? 'shadow-lg' : 'shadow-sm'}`} ${removeHover && 'border-red-600 shadow-lg shadow-red-200'}`}
+            // onClick={() => setSelected(pane)}
+        >
             <div className='flex gap-3'>
                 <DropdownButton state={showPane} setState={setShowPane} />
                 <div className='flex justify-between w-full'>
@@ -213,7 +170,11 @@ export default function TestPane({ test, isSelected, setSelected, newPane = fals
                             onChange={(event) => fieldChange(event, "subheader")}
                         />
                     </div>
-                    <RemoveButton onClick={removePane} />
+                    <RemoveButton 
+                        onClick={removePane} 
+                        removeHover={removeHover}
+                        setRemoveHover={setRemoveHover}
+                    />
                 </div>
             </div>
             {showPane && (<>
@@ -235,19 +196,12 @@ export default function TestPane({ test, isSelected, setSelected, newPane = fals
                             return <PaneNode {...paneProps} />
                         })}
                     </div>
-                    <AddButton onClick={addNode} showing={showingAddNode} />
+                    {showingAddNode && <AddButton onClick={addNode} />}
                 </div>
                 <div className='flex gap-3'>
                     {<DropdownButton state={showMoreTimeline} setState={setShowTimeline} alwaysHidden={pane.events && pane.events.length < 5} />}
                     <div className='w-full'>
-                        {!pane.events &&
-                            <div
-                                className='flex justify-center p-3 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray m-1'
-                                onClick={addEvent}
-                            >
-                                <IoMdAdd />
-                            </div>
-                        }
+                        {(!pane.events || !pane.events.length) && <AddButton onClick={addEvent} />}
                         {pane.events && pane.events.map((event, idx) => {
                             // if shortened timeline, only show the first 5 until user shows more
                             if (!showMoreTimeline && idx > 4) return <></>;
@@ -263,14 +217,7 @@ export default function TestPane({ test, isSelected, setSelected, newPane = fals
                                             descOnChange={(event) => fieldChange(event, "events", idx, "description")}
                                             remove={(e) => removeEvent(idx)}
                                         />
-                                        {showingAddEvent &&
-                                            <div
-                                                className='flex justify-center p-3 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray m-1'
-                                                onClick={addEvent}
-                                            >
-                                                <IoMdAdd />
-                                            </div>
-                                        }
+                                        {showingAddEvent && <AddButton onClick={addEvent} />}
                                     </div>
                                 )
                             else return (

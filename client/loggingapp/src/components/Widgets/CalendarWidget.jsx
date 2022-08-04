@@ -29,14 +29,14 @@ const CalendarWidget = () => {
                 startDate: new Date(),
                 endDate: new Date(Date.now() + 6.048e+8)
             })
-        console.log("date range", dateRange)
-        console.log("cal in dash", cal)
+        // console.log("date range", dateRange)
+        // console.log("cal in dash", cal)
         setEventsInRange(filterCal());
     }, [cal, dateRange])
 
-    useEffect(() => {
-        console.log("filtered cal", eventsInRange)
-    }, [eventsInRange])
+    // useEffect(() => {
+    //     console.log("filtered cal", eventsInRange)
+    // }, [eventsInRange])
 
     //fixme
     function filterCal() {

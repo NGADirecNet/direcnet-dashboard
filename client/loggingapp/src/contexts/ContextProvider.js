@@ -35,13 +35,13 @@ export const ContextProvider = ({ children }) => {
             })
     }, [])
 
-    useEffect(() => {
-        console.log("tests updated, ", tests)
-    }, [tests])
+    // useEffect(() => {
+    //     console.log("tests updated, ", tests)
+    // }, [tests])
 
-    useEffect(() => {
-        console.log("cal updated", cal)
-    }, [cal])
+    // useEffect(() => {
+    //     console.log("cal updated", cal)
+    // }, [cal])
     
     return (
         <StateContext.Provider

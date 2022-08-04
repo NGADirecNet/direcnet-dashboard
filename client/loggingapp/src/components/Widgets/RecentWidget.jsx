@@ -57,6 +57,7 @@ const RecentWidget = () => {
                         bgColor={currentColor}
                         text="Add"
                         borderRadius="10px"
+                        onClick={() => navigate('/test/new')}
                     />
                 </div>
 

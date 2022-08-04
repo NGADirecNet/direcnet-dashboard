@@ -33,7 +33,7 @@ export const demoLogo = {
 }
 
 export const newLogo = {
-    Type: 'New Test',
+    Type: 'New Test Type',
     Icon: <IoMdAdd />,
     IconColor: 'rgb(228, 106, 118)',
     IconBg: 'rgb(255, 244, 229)',

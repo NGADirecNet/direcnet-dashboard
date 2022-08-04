@@ -1,22 +1,27 @@
 import React, { useState, useEffect } from 'react'
-import { TestHeader, Map, TestPane, TestNote, TestTime } from '../components';
+import { TestHeader, Map, TestPane, TestNote, TestTime, AddButton } from '../components';
 import { BsCloudSun } from 'react-icons/bs'
 import { useParams } from 'react-router-dom';
 import { useStateContext } from '../contexts/ContextProvider';
 import { outdoorLogo, indoorLogo, emaneLogo, demoLogo, newLogo } from '../data/dashLogos'
+import { newNote, newTestSuite, newTime } from '../data/contants'
 import DetailsPane from './DetailsPane';
 import testApiService from '../testApi';
-import { IoMdAdd } from 'react-icons/io';
+import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 
 const TestView = (props) => {
-    // The selected test that we model on the right hand map, first test by default
-    const [selectedScenario, setSelectedScenario] = useState(null)
-    const [test, setTest] = useState({});
     const params = useParams();
     const { tests, setTests, currentDemo } = useStateContext();
+    // The selected scenario that we model on the right hand map, first scenario by default
+    const [selectedScenario, setSelectedScenario] = useState(null);
+    // test suite local state object, gets copied to remote database when we click save
+    const [test, setTest] = useState({});
     const { type, scenario, notes, timeline, time, weather, LogoClick, demo } = test;
+    // local test suite type state
     const [testType, setTestType] = useState();
+    // whether or not the DetailsPane is shown
     const [showMore, setShowMore] = useState(false);
+
     const [saved, setSaved] = useState(false);
     const [showingAddNote, showAddNote] = useState(false);
     const [showingAddTime, showAddTime] = useState(false);
@@ -32,31 +37,9 @@ const TestView = (props) => {
     // if no id supplied, we are in /demo, otherwise check for which test we are in
     // and query the data connected to that test
     useEffect(() => {
-        console.log("params id", params.id)
+        // console.log("params id", params.id)
         if (props.new) {
-            setTest({
-                commit: "",
-                date: null,
-                location: "",
-                notes: [],
-                scenario: "New Scenario",
-                status: "in progress",
-                time: {},
-                timeline: [{
-                    header: "New Header",
-                    subheader: "New Subheader",
-                    setup: [{
-                        name: "New Node",
-                        description: "Node setup"
-                    }],
-                    events: [{
-                        time: "00:00 AM",
-                        description: "New event"
-                    }],
-                    attachments: []
-                }],
-                type: "new"
-            });
+            setTest(newTestSuite);
             setShowMore(true);
         }
         else if (params.id === undefined) {
@@ -152,18 +135,18 @@ const TestView = (props) => {
         if (props.new) {
             testApiService.create(test)
                 .then(res => {
-                    if (res.status === 200)
+                    if (res)
                         setTests([
                             ...tests,
                             test
                         ])
                 })
-                .catch(err => console.log("ERR", err));
+            // .catch(err => console.log("ERR", err));
         }
         else
             testApiService.update(test)
                 .then(res => {
-                    if (res.status === 200)
+                    if (res)
                         setTests([
                             ...tests.filter(t => t._id !== test._id),
                             test
@@ -175,7 +158,7 @@ const TestView = (props) => {
     const addNote = () => {
         setTest({
             ...test,
-            notes: [...test.notes, "New Note..."]
+            notes: [...test.notes, newNote]
         })
         setSaved(false);
     }
@@ -189,7 +172,6 @@ const TestView = (props) => {
     }
 
     const removeNote = (idx) => {
-        console.log("removing note")
         setTest({
             ...test,
             notes: test.notes.filter((n, i) => i !== idx)
@@ -198,20 +180,18 @@ const TestView = (props) => {
     }
 
     const addTime = () => {
-        console.log("time added")
         setTest({
             ...test,
-            time: [...time, {name: "New Time", time: "00:00AM"}]
+            time: [...time, newTime]
         });
         setSaved(false);
     }
 
     const updateTime = (event, idx, field) => {
-        console.log("updating time")
         if (field === 'name' || field === 'time') {
             setTest({
                 ...test,
-                time: test.time.map((t, i) => i === idx ? { ...t, [field] : event.value } : t)
+                time: test.time.map((t, i) => i === idx ? { ...t, [field]: event.value } : t)
             })
             setSaved(false);
         }
@@ -221,7 +201,6 @@ const TestView = (props) => {
     }
 
     const removeTime = (idx) => {
-        console.log("removing time")
         setTest({
             ...test,
             time: test.time.filter((t, i) => i !== idx)
@@ -246,10 +225,10 @@ const TestView = (props) => {
             <div className='flex gap-2'>
                 {/* Left column */}
                 <div className='w-2/3'>
-                    {timeline && timeline.map((currTest, idx) =>
+                    {timeline && timeline.map((scen, idx) =>
                         <TestPane
-                            test={currTest}
-                            isSelected={selectedScenario === currTest.header}
+                            scenario={scen}
+                            isSelected={selectedScenario === scen.header}
                             setSelected={(test) => setSelectedScenario(test.header)}
                             testSuite={test}
                             setTest={setTest}
@@ -258,7 +237,7 @@ const TestView = (props) => {
                         />
                     )}
                     <TestPane
-                        newPane
+                        isNewPane
                         testSuite={test}
                         setTest={setTest}
                         setSelected={(test) => setSelectedScenario(test.header)}
@@ -274,76 +253,58 @@ const TestView = (props) => {
                         </div>
                     </div>
                     <div className='h-1/2 py-5 px-2'>
-                        <p className='text-xl font-semibold mb-5 pb-5 border-b-1'>Current Scenario: {selectedScenario}</p>
-                        {/* <p className='text-xl font-semibold mb-1'>Important Times</p>
+                        <div className='flex justify-between mb-5 pb-5 border-b-1'>
+                            <p className='flex text-xl font-semibold items-center'>Current Scenario:</p>
+                            <div className='border-1 rounded-lg p-2'>
+                                <DropDownListComponent
+                                    dataSource={timeline && timeline.map(s => s.header)}
+                                    placeholder={selectedScenario}
+                                    change={(e) => setSelectedScenario(e.itemData.value)}
+                                />
+                            </div>
+                        </div>
+                        <p className='text-xl font-semibold mb-1'>Important Times</p>
+                        {(!time || !time.length) && <AddButton onClick={addTime} />}
                         {time && time.map((t, idx) => {
+                            const timeComp = (
+                                <TestTime
+                                    time={t}
+                                    nameChange={(e) => updateTime(e, idx, "name")}
+                                    timeChange={(e) => updateTime(e, idx, "time")}
+                                    remove={() => removeTime(idx)}
+                                />);
                             if (idx === time.length - 1)
                                 return (
                                     <div
                                         onMouseEnter={() => showAddTime(true)}
                                         onMouseLeave={() => showAddTime(false)}
                                     >
-                                        <TestTime
-                                            time={t}
-                                            nameChange={(e) => updateTime(e, idx, "name")}
-                                            timeChange={(e) => updateTime(e, idx, "time")}
-                                            remove={() => removeTime(idx)}
-                                        />
-                                        {showingAddTime &&
-                                            <div
-                                                className='flex justify-center p-3 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray m-1'
-                                                onClick={addTime}
-                                            >
-                                                <IoMdAdd />
-                                            </div>}
+                                        {timeComp}
+                                        {showingAddTime && <AddButton onClick={addTime} />}
                                     </div>
                                 )
-                            else return (
-                                <TestTime
-                                    time={t}
-                                    nameChange={(e) => console.log("name change", e)}
-                                    timeChange={(e) => console.log("time change", e)}
-                                    remove={() => removeTime(idx)}
-                                />
-                            )
+                            else return (timeComp)
                         })
-                        } */}
-                        {weather &&
-                            getWeather(weather)
                         }
+                        {weather && getWeather(weather)}
                         <div className='py-5 border-y-1'>
                             <p className='text-xl font-semibold mb-5'>Notes:</p>
-                            {(!notes || !notes.length) &&
-                                <div
-                                    className='flex justify-center p-3 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray m-1'
-                                    onClick={addNote}
-                                >
-                                    <IoMdAdd />
-                                </div>
-                            }
+                            {(!notes || !notes.length) && <AddButton onClick={addNote} />}
                             {notes && notes.map((note, idx) => {
+                                const noteComp = (<TestNote note={note} onChange={(e) => noteChange(e, idx)} remove={() => removeNote(idx)} />);
                                 if (idx === notes.length - 1)
                                     return (
                                         <div
                                             onMouseEnter={() => showAddNote(true)}
                                             onMouseLeave={() => showAddNote(false)}
                                         >
-                                            <TestNote note={note} onChange={(e) => noteChange(e, idx)} remove={() => removeNote(idx)} />
-                                            {showingAddNote &&
-                                                <div
-                                                    className='flex justify-center p-3 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray m-1'
-                                                    onClick={addNote}
-                                                >
-                                                    <IoMdAdd />
-                                                </div>}
+                                            {noteComp}
+                                            {showingAddNote && <AddButton onClick={addNote} />}
                                         </div>
                                     )
-                                else return (<TestNote note={note} onChange={(e) => noteChange(e, idx)} remove={() => removeNote(idx)} />)
+                                else return (noteComp)
                             })}
                         </div>
-                        {/* <div className='py-5 border-y-1'> */}
-                        {/* <p className='text-xl font-semibold mb-5'>Extras:</p> */}
-                        {/* </div> */}
                     </div>
                 </div>
             </div>

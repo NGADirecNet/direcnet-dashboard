@@ -19,7 +19,6 @@ const TestHeader = ({ category, categoryChange, title, titleChange, showMore, se
     const hideDrop = () => setEditCategory(false)
 
     const onCatChange = (event) => {
-        console.log("CHANGE", event.itemData.value)
         categoryChange(event.itemData.value)
         hideDrop()
     }

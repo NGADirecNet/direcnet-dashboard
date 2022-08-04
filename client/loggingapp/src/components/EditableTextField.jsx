@@ -23,7 +23,10 @@ const EditableTextField = ({ placeholder, className, onChange }) => {
     }
 
     return (
-        <div onClick={() => setEditMode(true)}>
+        <div 
+            onClick={() => setEditMode(true)}
+            className={className}
+        >
             {editMode ?
                 (<TextBoxComponent
                     change={onTextChange} 
@@ -31,7 +34,7 @@ const EditableTextField = ({ placeholder, className, onChange }) => {
                     created={() => inputObj.focusIn(true)}
                     blur={() => setEditMode(false)}   
                 />) : 
-                (<p className={className}>
+                (<p>
                     {display}
                 </p>)
             }

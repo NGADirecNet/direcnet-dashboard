@@ -6,6 +6,19 @@ import { useStateContext } from '../contexts/ContextProvider';
 import { Button } from '../components';
 import { gridTestIcon, gridTestStatus, gridTypeText } from '../data/dashLogos';
 
+//todo allow for adding new locations
+const formatLocation = (props) => {
+  // fixme temp code for now
+  switch(props.location) {
+    case 'rome':
+      return 'Rome, NY'
+    case 'stockbridge':
+      return 'Stockbridge, NY'
+    default:
+      return 'Location'
+  }
+}
+
 const testsGrid = [
   {
     headerText: 'Test',
@@ -23,6 +36,7 @@ const testsGrid = [
   },
   {
     field: 'location',
+    template: formatLocation,
     headerText: 'Location',
     width: '150',
     textAlign: 'Center',
@@ -51,8 +65,10 @@ const testsGrid = [
 
   {
     field: 'date',
+    template: (props) => new Date(props.date).toLocaleString('en-US'),
+    sortComparer: (r, c) => new Date(r) < new Date(c),
     headerText: 'Date',
-    width: '150',
+    width: '200',
     textAlign: 'Center',
   },
 ];
@@ -62,10 +78,9 @@ const TestingPage = () => {
   const { tests, currentColor } = useStateContext();
   const editing = { allowDeleting: true, allowEditing: true };
   let grid;
-  
+
   const rowSel = () => {
     if (grid) {
-      // console.log("grid", grid.getSelectedRowIndexes())
       const data = grid.getSelectedRecords()
       navigate('/test/' + data[0]._id)
     }
@@ -116,6 +131,12 @@ const TestingPage = () => {
         editSettings={editing}
         rowSelected={rowSel}
         ref={g => grid = g}
+        sortSettings={{
+          columns: [{
+            field: 'date',
+            direction: 'Ascending'
+          }]
+        }}
       >
         <ColumnsDirective>
           {/* eslint-disable-next-line react/jsx-props-no-spreading */}

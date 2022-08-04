@@ -1,16 +1,15 @@
 import React, { useState } from 'react'
-import { IoMdRemoveCircle } from 'react-icons/io';
-import { useStateContext } from '../contexts/ContextProvider';
 import EditableTextField from './EditableTextField';
+import RemoveButton from './RemoveButton';
 
 // holds state for node hovering, renders node object from timeline to the DOM
 export default function PaneNode({ node, onChange, showDesc = false, descOnChange, removeNode }) {
-    const { currentColor } = useStateContext();
     const [hover, setHover] = useState(false);
+    const [removeHover, setRemoveHover] = useState(false);
 
     return (
         <div
-            className={`w-1/3 ${hover && 'border-1 rounded-lg'}`}
+            className={`w-1/3 ${hover && 'border-1 rounded-lg'} ${removeHover && 'border-red-600'}`}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
         >
@@ -21,14 +20,11 @@ export default function PaneNode({ node, onChange, showDesc = false, descOnChang
                     onChange={onChange}
                 />
                 {hover &&
-                    <button
-                        type="button"
-                        style={{ color: currentColor }}
-                        className="text-lg hover:drop-shadow-xl text-white rounded-full p-2"
-                        onClick={removeNode}
-                    >
-                        <IoMdRemoveCircle />
-                    </button>
+                    <RemoveButton 
+                        onClick={removeNode} 
+                        removeHover={removeHover}
+                        setRemoveHover={setRemoveHover}
+                    />
                 }
             </div>
             {showDesc &&
