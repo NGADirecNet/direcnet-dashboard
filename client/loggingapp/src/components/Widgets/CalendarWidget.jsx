@@ -38,14 +38,15 @@ const CalendarWidget = () => {
     //     console.log("filtered cal", eventsInRange)
     // }, [eventsInRange])
 
-    //fixme
     function filterCal() {
+        // console.log("CAL", cal)
         return cal.filter((event) => {
+            // console.log("EVENT", event)
             // does event recur
-            const doesRecur = event.RecurrenceRule !== null
+            const doesRecur = event.RecurrenceRule ? true : false
             // if recur, get recur dates in range
             const dateInBetween = (start, end, date) => {
-                return new Date(start) < new Date(date) < new Date(end) 
+                return (new Date(start) < new Date(date)) && (new Date(date) < new Date(end))
             }
 
             const getRecurDates = () => {
@@ -70,7 +71,8 @@ const CalendarWidget = () => {
                 //       [ ---- Range ---- ]
                 // start                       fin
                 (event.StartTime < dateRange.startDate && event.EndTime > dateRange.endDate)
-
+            // console.log("does recur", doesRecur)
+            // console.log("in range", inRange, dateRange)
             return (!doesRecur && inRange)
         })
     }

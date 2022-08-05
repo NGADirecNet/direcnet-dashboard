@@ -32,7 +32,8 @@ const EditableTextField = ({ placeholder, className, onChange }) => {
                     change={onTextChange} 
                     ref={(text) => setInputObj(text)}
                     created={() => inputObj.focusIn(true)}
-                    blur={() => setEditMode(false)}   
+                    blur={() => setEditMode(false)}
+                    value={display}   
                 />) : 
                 (<p>
                     {display}

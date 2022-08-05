@@ -28,6 +28,7 @@ export default function TestNote({ note, onChange, remove }) {
                         ref={(text) => setInputObj(text)}
                         created={() => inputObj.focusIn(true)}
                         blur={() => setEditMode(false)}
+                        value={display}
                     />
                 </div>) :
                 (<li className='p-1 text-sm' onClick={() => setEditMode(true)}>{display}</li>)

@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.fcf8d7ee.css",
-    "main.js": "/static/js/main.9d582298.js",
+    "main.css": "/static/css/main.a81843e7.css",
+    "main.js": "/static/js/main.b6f7f817.js",
     "static/media/hii_logo.jpg": "/static/media/hii_logo.e7c99181f8d68b42e3a5.jpg",
     "static/media/branches.png": "/static/media/branches.12276221f921fcecdc40.png",
     "index.html": "/index.html",
-    "main.fcf8d7ee.css.map": "/static/css/main.fcf8d7ee.css.map",
-    "main.9d582298.js.map": "/static/js/main.9d582298.js.map"
+    "main.a81843e7.css.map": "/static/css/main.a81843e7.css.map",
+    "main.b6f7f817.js.map": "/static/js/main.b6f7f817.js.map"
   },
   "entrypoints": [
-    "static/css/main.fcf8d7ee.css",
-    "static/js/main.9d582298.js"
+    "static/css/main.a81843e7.css",
+    "static/js/main.b6f7f817.js"
   ]
 }

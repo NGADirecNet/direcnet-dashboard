@@ -5,8 +5,10 @@ import { BsCheck2 } from 'react-icons/bs';
 import { GoEye } from 'react-icons/go';
 import { CalendarWidget, SyncWidget, GraphWidget, RecentWidget, SmallWidget, WeatherWidget } from '../components';
 import { getTime } from '../data/smallWidgetUtil';
+import { useStateContext } from '../contexts/ContextProvider';
 
 const Dashboard = () => {
+  const { currentDemo } = useStateContext();
   const normalLink = 'flex items-center gap-5 pl-4 pt-2 pb-1.5 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray m-1';
   const smallWidgetData = [
     {
@@ -24,8 +26,8 @@ const Dashboard = () => {
     },
     {
       icon: <GoEye />,
-      ...getTime('7/27/22', 'Demo'),
-      link: '/demo'
+      ...getTime(new Date(currentDemo.date).toLocaleDateString('en-US'), 'Demo'),
+      link: '/test/' + currentDemo._id
     },
   ];
   const getAtlassianButton = (link, icon, text) =>

@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from 'react'
 import { TestHeader, Map, TestPane, TestNote, TestTime, AddButton } from '../components';
 import { BsCloudSun } from 'react-icons/bs'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useStateContext } from '../contexts/ContextProvider';
 import { outdoorLogo, indoorLogo, emaneLogo, demoLogo, newLogo } from '../data/dashLogos'
 import { newNote, newTestSuite, newTime } from '../data/contants'
 import DetailsPane from './DetailsPane';
 import testApiService from '../testApi';
 import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
+import { createSpinner, showSpinner, hideSpinner } from '@syncfusion/ej2-react-popups';
+import { getTestType } from '../data/dataUtil';
 
 const TestView = (props) => {
     const params = useParams();
+    const navigate = useNavigate();
     const { tests, setTests, currentDemo } = useStateContext();
     // The selected scenario that we model on the right hand map, first scenario by default
     const [selectedScenario, setSelectedScenario] = useState(null);
     // test suite local state object, gets copied to remote database when we click save
     const [test, setTest] = useState({});
-    const { type, scenario, notes, timeline, time, weather, LogoClick, demo } = test;
+    const { type, scenario, notes, timeline, time, weather, LogoClick } = test;
     // local test suite type state
     const [testType, setTestType] = useState();
     // whether or not the DetailsPane is shown
@@ -26,6 +29,12 @@ const TestView = (props) => {
     const [showingAddNote, showAddNote] = useState(false);
     const [showingAddTime, showAddTime] = useState(false);
 
+    useEffect(() => {
+        createSpinner({
+            target: document.getElementById("container")
+        });
+    }, [])
+
     // default selected scenario to the first test in the timeline
     useEffect(() => {
         console.log("test", test)
@@ -34,23 +43,31 @@ const TestView = (props) => {
             setSelectedScenario(test.timeline[0].header)
     }, [selectedScenario, test])
 
-    // if no id supplied, we are in /demo, otherwise check for which test we are in
-    // and query the data connected to that test
+    // query the data connected to that test
     useEffect(() => {
-        // console.log("params id", params.id)
-        if (props.new) {
+        console.log("params id", params.id)
+        console.log("tests", tests)
+        if (!tests.length) {
+            // it hasnt loaded yet, set a loading spinner until it does
+            showSpinner(document.getElementById("container"))
+        }
+        else if (params.id) {
+            setTest(tests.find(test => test._id.toString() === params.id));
+            setSaved(true);
+            hideSpinner(document.getElementById("container"))
+        }
+        else if (props.new) {
             setTest(newTestSuite);
             setShowMore(true);
+            hideSpinner(document.getElementById("container"))
         }
         else if (params.id === undefined) {
             setTest(currentDemo);
             setSaved(true);
+            hideSpinner(document.getElementById("container"))
         }
-        else {
-            setTest(tests.find(test => test._id.toString() === params.id));
-            setSaved(true);
-        }
-    }, [])
+        
+    }, [tests, params.id])
 
     // types: sunny, partly cloudy, cloudy
     const getWeather = (weather) => {
@@ -78,13 +95,8 @@ const TestView = (props) => {
         )
     }
 
-    const getLogoAndHeader = (isDemo) => {
-        const logo = isDemo ? { ...demoLogo }
-            : testType === 'outdoor' ? { ...outdoorLogo }
-                : testType === 'indoor' ? { ...indoorLogo }
-                    : testType === 'emane' ? { ...emaneLogo }
-                        : { ...newLogo }
-
+    const getLogoAndHeader = () => {
+        const logo = getTestType(testType);
         return (
             <>
                 <a
@@ -135,11 +147,14 @@ const TestView = (props) => {
         if (props.new) {
             testApiService.create(test)
                 .then(res => {
-                    if (res)
+                    if (res) {
                         setTests([
                             ...tests,
-                            test
+                            res
                         ])
+                        navigate('/test/' + res._id)
+                    }
+
                 })
             // .catch(err => console.log("ERR", err));
         }
@@ -209,9 +224,9 @@ const TestView = (props) => {
     }
 
     return (
-        <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
+        <div id="container" className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
             <div className='flex gap-4'>
-                {getLogoAndHeader(demo)}
+                {getLogoAndHeader()}
             </div>
             {/* Everything Below header */}
             {showMore &&
@@ -234,6 +249,7 @@ const TestView = (props) => {
                             setTest={setTest}
                             saved={saved}
                             setSaved={setSaved}
+                            key={idx}
                         />
                     )}
                     <TestPane
@@ -243,6 +259,7 @@ const TestView = (props) => {
                         setSelected={(test) => setSelectedScenario(test.header)}
                         saved={saved}
                         setSaved={setSaved}
+                        key={timeline && timeline.length}
                     />
                 </div>
                 {/* Right Column */}
@@ -260,6 +277,7 @@ const TestView = (props) => {
                                     dataSource={timeline && timeline.map(s => s.header)}
                                     placeholder={selectedScenario}
                                     change={(e) => setSelectedScenario(e.itemData.value)}
+                                    value={selectedScenario}
                                 />
                             </div>
                         </div>

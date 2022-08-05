@@ -20,12 +20,10 @@ export default function DetailsPane({ test, setTest, saved, setSaved }) {
     const [statEditMode, setStatEditMode] = useState(false);
     const [statObj, setStatObj] = useState();
 
-    //todo use effect turn all edit modes on if we are creating a new entry
-
+    //todo allow for adding a new location
     const locationItems = [
-        { "Name": "Rome, NY", "value": "rome" },
-        { "Name": "Stockbridge, NY", "value": "stockbridge" },
-        { "Name": "Add New", "value": "new" },
+        "Rome, NY",
+        "Stockbridge, NY",
     ]
 
     const statusItems = [
@@ -34,12 +32,34 @@ export default function DetailsPane({ test, setTest, saved, setSaved }) {
         { "Name": "Scheduled", "value": "scheduled" },
     ]
 
+    // returns
+    // 'completed' - past
+    // 'in progress' - today
+    // 'scheduled' - future
+    const pastTodayOrFuture = (date) => {
+        var inputDate = new Date(date);
+        var today = new Date();
+        // if today
+        if (inputDate.setHours(0, 0, 0, 0) === today.setHours(0, 0, 0, 0)) return 'in progress'
+        // else if past
+        else if (inputDate < today) return 'completed'
+        // else present
+        else return 'scheduled'
+    }
+
     const fieldChange = (event, field) => {
         if (field === 'status' || field === 'location') {
             setTest({
                 ...test,
                 [field]: event.itemData.value
             })
+        }
+        else if (field === 'date') {
+            // change in date defaults the status
+            // now=in prog, future=scheduled, past=completed
+            // status still changeable in and of itself this just makes usability easier
+            const dateChange = pastTodayOrFuture(event.value);
+            fieldChange({ itemData: { value: dateChange }}, 'status')
         }
         else
             setTest({

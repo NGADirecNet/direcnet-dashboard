@@ -9,6 +9,7 @@ const dropdownItems = [
     { "Name": "Outdoor Test", "value": "outdoor" },
     { "Name": "Indoor Test", "value": "indoor" },
     { "Name": "EMANE", "value": "emane" },
+    { "Name": "DEMO", "value": "demo"}
 ]
 
 const TestHeader = ({ category, categoryChange, title, titleChange, showMore, setShowMore, saved, saveChanges }) => {

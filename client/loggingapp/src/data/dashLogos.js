@@ -3,6 +3,7 @@ import { RiComputerLine } from 'react-icons/ri'
 import { BiBuildingHouse } from 'react-icons/bi'
 import { GoEye } from 'react-icons/go'
 import { IoMdAdd } from 'react-icons/io'
+import { getTestType } from './dataUtil'
 
 export const outdoorLogo = {
     Type: 'Outdoor Test',
@@ -40,8 +41,8 @@ export const newLogo = {
 }
 
 export const gridTestStatus = (props) => {
-    var statusBg = 
-        props.status === 'completed' ? '#8BE78B' 
+    var statusBg =
+        props.status === 'completed' ? '#8BE78B'
             : props.status === 'in progress' ? '#FEC90F'
                 : 'rgb(228, 106, 118)'
 
@@ -57,9 +58,7 @@ export const gridTestStatus = (props) => {
 }
 
 export const gridTestIcon = (props) => {
-    var logo = props.type === 'outdoor' ? { ...outdoorLogo }
-        : props.type === 'indoor' ? { ...indoorLogo }
-            : { ...emaneLogo }
+    var logo = getTestType(props.type);
     return (
         <button
             type="button"
@@ -77,5 +76,6 @@ export const gridTestIcon = (props) => {
 export const gridTypeText = (props) => {
     return props.type === 'outdoor' ? 'Outdoor Test'
         : props.type === 'indoor' ? 'Indoor Test'
-            : 'EMANE'
+            : props.type === 'demo' ? 'Demo'
+                : 'EMANE'
 }

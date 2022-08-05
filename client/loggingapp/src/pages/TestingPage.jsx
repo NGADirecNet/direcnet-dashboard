@@ -6,18 +6,6 @@ import { useStateContext } from '../contexts/ContextProvider';
 import { Button } from '../components';
 import { gridTestIcon, gridTestStatus, gridTypeText } from '../data/dashLogos';
 
-//todo allow for adding new locations
-const formatLocation = (props) => {
-  // fixme temp code for now
-  switch(props.location) {
-    case 'rome':
-      return 'Rome, NY'
-    case 'stockbridge':
-      return 'Stockbridge, NY'
-    default:
-      return 'Location'
-  }
-}
 
 const testsGrid = [
   {
@@ -36,7 +24,6 @@ const testsGrid = [
   },
   {
     field: 'location',
-    template: formatLocation,
     headerText: 'Location',
     width: '150',
     textAlign: 'Center',

@@ -3,7 +3,7 @@ import Dropdown from '../Dropdown'
 import { recentTransactions } from '../../data/dummy'
 import Button from '../Button'
 import { useStateContext } from '../../contexts/ContextProvider'
-import { timeCalc } from '../../data/dataUtil'
+import { getTestType, timeCalc } from '../../data/dataUtil'
 import { useNavigate } from 'react-router-dom'
 import { outdoorLogo, indoorLogo, emaneLogo } from '../../data/dashLogos'
 
@@ -21,9 +21,7 @@ const RecentWidget = () => {
                 {tests.map((item, idx) => {
                     if (idx > 4) return <></>;
                     else {
-                        const logo = item.type === 'outdoor' ? { ...outdoorLogo }
-                            : item.type === 'indoor' ? { ...indoorLogo }
-                                : { ...emaneLogo }
+                        const logo = getTestType(item.type)
                         return (
                             <div key={item.title} className="flex justify-between mt-4">
                                 <div className="flex gap-4">

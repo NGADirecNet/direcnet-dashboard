@@ -191,7 +191,8 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
                                 onChange: (event) => fieldChange(event, "setup", idx, "name"),
                                 showDesc: showSteps,
                                 descOnChange: (event) => fieldChange(event, "setup", idx, "description"),
-                                removeNode: () => removeNode(idx)
+                                removeNode: () => removeNode(idx),
+                                key: idx
                             }
                             return <PaneNode {...paneProps} />
                         })}
@@ -210,12 +211,14 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
                                     <div
                                         onMouseEnter={() => showAddEvent(true)}
                                         onMouseLeave={() => showAddEvent(false)}
+                                        key={idx}
                                     >
                                         <PaneEvent
                                             event={event}
                                             timeOnChange={(event) => fieldChange(event, "events", idx, "time")}
                                             descOnChange={(event) => fieldChange(event, "events", idx, "description")}
                                             remove={(e) => removeEvent(idx)}
+                                            key={idx}
                                         />
                                         {showingAddEvent && <AddButton onClick={addEvent} />}
                                     </div>
@@ -226,6 +229,7 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
                                     timeOnChange={(event) => fieldChange(event, "events", idx, "time")}
                                     descOnChange={(event) => fieldChange(event, "events", idx, "description")}
                                     remove={(e) => removeEvent(idx)}
+                                    key={idx}
                                 />
                             )
                         })}

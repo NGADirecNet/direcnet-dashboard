@@ -11,7 +11,6 @@ import { useStateContext } from './contexts/ContextProvider';
 
 const App = () => {
     const { activeMenu, currentColor, tests } = useStateContext();
-    
     return (
         <BrowserRouter>
             <div className='flex relative dark:bg-main-dark-bg'>
@@ -62,7 +61,6 @@ const App = () => {
                             {/* Tests */}
                             <Route path='/test/:id' element={<TestView />} />
                             <Route path='/test/new' element={<TestView new />} />
-                            <Route path='/demo' element={<TestView />} />
 
                             {/* External */}
                             <Route path='/latest-stable' element={
@@ -84,7 +82,7 @@ const App = () => {
                 </div>
             </div>
             {/* Links */}
-            {tests.map(test => (<Link to={'/test/' + test._id} />))}
+            {tests.map(test => (<Link to={'/test/' + test._id} key={test._id} />))}
         </BrowserRouter>
     )
 }

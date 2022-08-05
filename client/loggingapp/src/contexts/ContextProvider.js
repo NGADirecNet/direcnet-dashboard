@@ -9,9 +9,11 @@ const StateContext = createContext();
 
 // filter by date key val pair and return object
 // with the most recent date
-const getMostRecent = (objArray=[]) => {
-    if (objArray.length === 0) return {}
-    return objArray.reduce((a, b) => new Date(a.date) > new Date(b.date) ? a : b)
+const getMostRecent = ( testsArr=[] ) => {
+    if (testsArr.length === 0) return {}
+    return testsArr
+        .filter(test => test.type === 'demo')
+        .reduce((a, b) => new Date(a.date) > new Date(b.date) ? a : b)
 }
 
 export const ContextProvider = ({ children }) => {
@@ -25,13 +27,16 @@ export const ContextProvider = ({ children }) => {
     useEffect(() => {
         testApiService.get()
             .then(json => {
-                setTests(json)
-                setCurrentDemo(getMostRecent(json.filter(obj => obj.demo === true)))
+                if (!json.message) {
+                    setTests(json)
+                    setCurrentDemo(getMostRecent(json))
+                }
             })
-        
+
         calendarApiService.get()
             .then(json => {
-                setCal(json)
+                if (!json.message)
+                    setCal(json)
             })
     }, [])
 
@@ -42,7 +47,11 @@ export const ContextProvider = ({ children }) => {
     // useEffect(() => {
     //     console.log("cal updated", cal)
     // }, [cal])
-    
+
+    // useEffect(() => {
+    //     console.log("current demo updated - ", currentDemo)
+    // }, [currentDemo])
+
     return (
         <StateContext.Provider
             value={{
