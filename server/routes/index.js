@@ -5,6 +5,7 @@ const heroesService = require('../hero-service');
 const testService = require('../testService');
 const tduResService = require('../tduResService');
 const calendarService = require('../calendarService');
+const atlassianservice = require('../atlassianservice')
 
 router.get('/heroes', (req, res) => {
   heroesService.get(req, res);
@@ -64,6 +65,14 @@ router.post('/updateCalendar', (req, res) => {
 
 router.delete('/deleteCalendar/:Id', (req, res) => {
   calendarService.destroy(req, res);
+})
+
+router.get('/bitbucket/branches', (req, res) => {
+  atlassianservice.get(req, res);
+})
+
+router.get('/bitbucket/commits/:branch', (req, res) => {
+  atlassianservice.getCommits(req, res);
 })
 
 module.exports = router;

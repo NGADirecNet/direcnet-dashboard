@@ -1,33 +1,20 @@
 import React from 'react';
 import { FaJira, FaConfluence, FaBitbucket } from 'react-icons/fa'
-import { DiGitBranch } from 'react-icons/di';
-import { BsCheck2 } from 'react-icons/bs';
 import { GoEye } from 'react-icons/go';
-import { CalendarWidget, SyncWidget, GraphWidget, RecentWidget, SmallWidget, WeatherWidget } from '../components';
+import { CalendarWidget, SyncWidget, GraphWidget, RecentWidget, SmallWidget, WeatherWidget, ChangeSmallWidget, MainSmallWidget } from '../components';
 import { getTime } from '../data/smallWidgetUtil';
 import { useStateContext } from '../contexts/ContextProvider';
 
 const Dashboard = () => {
-  const { currentDemo } = useStateContext();
+  const { currentDemo  } = useStateContext();
   const normalLink = 'flex items-center gap-5 pl-4 pt-2 pb-1.5 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray m-1';
   const smallWidgetData = [
     {
-      icon: <DiGitBranch />,
-      ...getTime('15 Jul 2022 9:50', 'Software Change', '6c47dc6'),
-      iconColor: 'rgb(228, 106, 118)',
-      iconBg: 'rgb(255, 244, 229)',
-      pcColor: 'red-600',
-      externallink: 'https://cuse-atlassian.alionscience.com:8446/projects/DNET/repos/simulink/commits/6c47dc6fcbb6d2a4399e43a99d20dc3587b1d1e9'
-    },
-    {
-      icon: <BsCheck2 />,
-      ...getTime('8 Jul 2022 9:52', 'Stable Software', 'main'),
-      externallink: 'https://cuse-atlassian.alionscience.com:8446/projects/DNET/repos/simulink/commits/7b1efb684f2adf8a4f9e89270d1ed3ec62611e61'
-    },
-    {
-      icon: <GoEye />,
-      ...getTime(new Date(currentDemo.date).toLocaleDateString('en-US'), 'Demo'),
-      link: '/test/' + currentDemo._id
+      data: {
+        icon: <GoEye />,
+        ...getTime(new Date(currentDemo.date).toLocaleDateString('en-US'), 'Demo'),
+        link: '/test/' + currentDemo._id
+      },
     },
   ];
   const getAtlassianButton = (link, icon, text) =>
@@ -47,7 +34,7 @@ const Dashboard = () => {
         <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-44 rounded-xl w-full lg:w-80 p-6 pt-8 m-3">
           {getAtlassianButton("https://cuse-atlassian.alionscience.com:8443/secure/Dashboard.jspa", <FaJira />, "Jira")}
           {getAtlassianButton("https://cuse-atlassian.alionscience.com:8444/display/DIR/Next+Gen+Airborne+DirecNet", <FaConfluence />, "Confluence")}
-          {getAtlassianButton("https://cuse-atlassian.alionscience.com:8446/projects/DNET/repos/simulink/", <FaBitbucket />, "BitBucket")}
+          {getAtlassianButton("https://cuse-atlassian.alionscience.com:8446/plugins/servlet/bb_ag/projects/DNET/repos/simulink/commits", <FaBitbucket />, "BitBucket")}
         </div>
         <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
           <div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56  p-4 pt-9 rounded-2xl ">
@@ -65,8 +52,10 @@ const Dashboard = () => {
               <p>1.0</p>
             </div>
           </div>
+          <ChangeSmallWidget />
+          <MainSmallWidget />
           {smallWidgetData.map((item) => (
-            <SmallWidget item={item} />
+            <SmallWidget item={item.data} dropData={item.dropData} key={item} />
           ))}
         </div>
       </div>

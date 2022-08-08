@@ -3,7 +3,6 @@ import { TestHeader, Map, TestPane, TestNote, TestTime, AddButton } from '../com
 import { BsCloudSun } from 'react-icons/bs'
 import { useNavigate, useParams } from 'react-router-dom';
 import { useStateContext } from '../contexts/ContextProvider';
-import { outdoorLogo, indoorLogo, emaneLogo, demoLogo, newLogo } from '../data/dashLogos'
 import { newNote, newTestSuite, newTime } from '../data/contants'
 import DetailsPane from './DetailsPane';
 import testApiService from '../testApi';

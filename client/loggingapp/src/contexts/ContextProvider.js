@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import testApiService from '../testApi';
 import calendarApiService from '../calendarApi';
+import atlassianApiService from '../atlassianApi';
 
 const StateContext = createContext();
 
@@ -9,7 +10,7 @@ const StateContext = createContext();
 
 // filter by date key val pair and return object
 // with the most recent date
-const getMostRecent = ( testsArr=[] ) => {
+const getMostRecent = (testsArr = []) => {
     if (testsArr.length === 0) return {}
     return testsArr
         .filter(test => test.type === 'demo')
@@ -23,6 +24,8 @@ export const ContextProvider = ({ children }) => {
     const [tests, setTests] = useState([])
     const [currentDemo, setCurrentDemo] = useState({})
     const [cal, setCal] = useState([])
+
+    const [branches, setBranches] = useState([])
 
     useEffect(() => {
         testApiService.get()
@@ -38,6 +41,13 @@ export const ContextProvider = ({ children }) => {
                 if (!json.message)
                     setCal(json)
             })
+        atlassianApiService.get()
+            .then(json => {
+                if (json) {
+                    setBranches(json.values)
+                }
+            })
+
     }, [])
 
     // useEffect(() => {
@@ -65,7 +75,9 @@ export const ContextProvider = ({ children }) => {
                 currentDemo,
                 setCurrentDemo,
                 cal,
-                setCal
+                setCal,
+                branches,
+                setBranches
             }}
         >
             {children}
