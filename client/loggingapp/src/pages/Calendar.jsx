@@ -13,8 +13,8 @@ const Scheduler = () => {
   const { cal } = useStateContext();
 
   useEffect(() => {
-    if (scheduleObj && !cal) scheduleObj.showSpinner(true);
-    else if (scheduleObj && cal) scheduleObj.showSpinner(false);
+    if (scheduleObj && !cal.length) scheduleObj.showSpinner(true);
+    else if (scheduleObj && cal.length) scheduleObj.showSpinner(false);
   }, [scheduleObj, cal])
 
   const change = (args) => {

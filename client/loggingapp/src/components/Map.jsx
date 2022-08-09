@@ -1,7 +1,17 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { MapsComponent, LayersDirective, LayerDirective, MarkersDirective, MarkerDirective, Inject, Marker, MapsTooltip, NavigationLine, NavigationLineDirective, NavigationLinesDirective } from '@syncfusion/ej2-react-maps'
 
-export default function Map(props) {
+const Map = (props) => {
+    const [map, setMap] = useState();
+    const [resizing, setResizing] = useState(false);
+
+    useEffect(() => {
+        setResizing(false)
+    }, [map])
+
+    useEffect(() => {
+        setResizing(true)
+    }, [props.onResize])
 
     // gives shape, fill, width
     const defaultMarkerProps = {
@@ -77,7 +87,7 @@ export default function Map(props) {
 
     ]
 
-    return (
+    return (!resizing ?
         <MapsComponent
             id="maps"
             height={props.height}
@@ -89,6 +99,8 @@ export default function Map(props) {
                 latitude: 43.212400,
                 longitude: -75.397000
             }}
+            ref={map => setMap(map)}
+            resize={() => setResizing(true)}
         >
             <Inject services={[Marker, MapsTooltip, NavigationLine]} />
             <LayersDirective>
@@ -108,6 +120,8 @@ export default function Map(props) {
                     </NavigationLinesDirective>
                 </LayerDirective>
             </LayersDirective>
-        </MapsComponent>
-    )
+        </MapsComponent> : <></>
+    );
 }
+
+export default Map;

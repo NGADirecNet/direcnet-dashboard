@@ -9,6 +9,7 @@ import Button from '../Button'
 import { useNavigate } from 'react-router-dom'
 import { DateRangePickerComponent } from '@syncfusion/ej2-react-calendars'
 import { timeCalc } from '../../data/dataUtil'
+import { RecurrenceEditorComponent } from '@syncfusion/ej2-react-schedule'
 
 const CalendarWidget = () => {
     const { currentColor, cal } = useStateContext();
@@ -21,6 +22,11 @@ const CalendarWidget = () => {
     })
     // events in dateRange that will show under Events
     const [eventsInRange, setEventsInRange] = useState([])
+    const [recObj, setRecObj] = useState();
+
+    // useEffect(() => {
+    //     console.log("rec object", recObj)
+    // }, [recObj])
 
     useEffect(() => {
         if (dateRange.startDate === null || dateRange.endDate === null)
@@ -29,8 +35,6 @@ const CalendarWidget = () => {
                 startDate: new Date(),
                 endDate: new Date(Date.now() + 6.048e+8)
             })
-        // console.log("date range", dateRange)
-        // console.log("cal in dash", cal)
         setEventsInRange(filterCal());
     }, [cal, dateRange])
 
@@ -38,19 +42,24 @@ const CalendarWidget = () => {
     //     console.log("filtered cal", eventsInRange)
     // }, [eventsInRange])
 
+    function getNextRecurDate(event) {
+        const start = new Date(event.StartTime)
+        let dates = recObj && recObj.getRecurrenceDates(start, event.RecurrenceRule)
+        return dates && dates[0]
+    }
+
     function filterCal() {
-        // console.log("CAL", cal)
         return cal.filter((event) => {
-            // console.log("EVENT", event)
             // does event recur
             const doesRecur = event.RecurrenceRule ? true : false
-            // if recur, get recur dates in range
+
             const dateInBetween = (start, end, date) => {
                 return (new Date(start) < new Date(date)) && (new Date(date) < new Date(end))
             }
 
-            const getRecurDates = () => {
-                return []
+            const isNextRecurDateInRange = () => {
+                const next = getNextRecurDate(event)
+                return dateInBetween(dateRange.startDate, dateRange.endDate, next)
             }
             // not in range
             //            [ ---- Range ---- ]
@@ -58,7 +67,7 @@ const CalendarWidget = () => {
             // [ ---- Range ---- ]
             //                      start fin
             // in Range:
-            const inRange = 
+            const inRange =
                 // [ ---- Range ---- ]
                 //   start       fin
                 (dateInBetween(dateRange.startDate, dateRange.endDate, event.StartTime) && dateInBetween(dateRange.startDate, dateRange.endDate, event.EndTime)) ||
@@ -71,32 +80,32 @@ const CalendarWidget = () => {
                 //       [ ---- Range ---- ]
                 // start                       fin
                 (event.StartTime < dateRange.startDate && event.EndTime > dateRange.endDate)
-            // console.log("does recur", doesRecur)
-            // console.log("in range", inRange, dateRange)
-            return (!doesRecur && inRange)
+            return doesRecur ? isNextRecurDateInRange() : inRange
         })
     }
 
     // displays event nicely under Events tab
     const getEventDisplay = (event) => {
-        const isPast = event.StartTime < new Date()
-        const time = timeCalc(new Date(event.StartTime))
+        // const isPast = event.StartTime < new Date()
+        const dateToCalc = event.RecurrenceRule ? getNextRecurDate(event) : new Date(event.StartTime)
+        const time = timeCalc(dateToCalc)
         return (
-            <div className="flex justify-between mt-4 w-full">
+            <div className="flex justify-between mt-4 w-full py-1 items-center">
                 <div className="flex gap-4">
                     <button
                         type="button"
                         style={{ color: currentColor }}
-                        className="text-base hover:drop-shadow-xl text-white rounded-full p-3"
+                        className="text-base hover:drop-shadow-lg text-white rounded-full p-3 m-1 hover:bg-light-gray"
+                        onClick={() => navigate('/calendar')}
                     >
                         {getEventIcon(event)}
                     </button>
-                    <div>
+                    <div className='items-center'>
                         <p className="text-md font-semibold">{event.Subject}</p>
                         <p className="text-sm text-gray-400">{event.Location}</p>
                     </div>
                 </div>
-                <p>{isPast ? `${time} ago` : `in ${time}`}</p>
+                <p className='text-gray-400 px-2'>{/*isPast ? `${time} ago` : `in ${time}`*/`in ${time}`}</p>
             </div>
         )
     }
@@ -137,10 +146,21 @@ const CalendarWidget = () => {
                     change={setDateRange}
                     placeholder={"This Week"}
                 />
+                <RecurrenceEditorComponent 
+                    style={{ display: 'none'}}
+                    ref={(rec) => setRecObj(rec)}
+                />
             </div>
             <div className="border-b-1 border-color pb-4 mt-2">
                 <p className="text-md font-semibold mb-2">Events</p>
-                {eventsInRange.map((event) => getEventDisplay(event))}
+                <div className='h-96 overflow-auto'>
+                    {eventsInRange
+                        .sort((a, b) => {
+                            const getTime = (ev) => ev.RecurrenceRule ? getNextRecurDate(ev) : new Date(ev.StartTime);
+                            return getTime(a) > getTime(b) ? 1 : -1})
+                        .map((event) => getEventDisplay(event))
+                    }
+                </div>
             </div>
             <div className="flex justify-between items-center mt-5 border-color">
                 <div className="mt-3">

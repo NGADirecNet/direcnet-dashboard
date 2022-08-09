@@ -6,7 +6,7 @@ import { getTime } from '../data/smallWidgetUtil';
 import { useStateContext } from '../contexts/ContextProvider';
 
 const Dashboard = () => {
-  const { currentDemo  } = useStateContext();
+  const { currentDemo } = useStateContext();
   const normalLink = 'flex items-center gap-5 pl-4 pt-2 pb-1.5 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray m-1';
   const smallWidgetData = [
     {

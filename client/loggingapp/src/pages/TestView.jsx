@@ -36,7 +36,7 @@ const TestView = (props) => {
 
     // default selected scenario to the first test in the timeline
     useEffect(() => {
-        console.log("test", test)
+        // console.log("test", test)
         setTestType(type)
         if (selectedScenario === null && test.timeline)
             setSelectedScenario(test.timeline[0].header)
@@ -44,8 +44,6 @@ const TestView = (props) => {
 
     // query the data connected to that test
     useEffect(() => {
-        console.log("params id", params.id)
-        console.log("tests", tests)
         if (!tests.length) {
             // it hasnt loaded yet, set a loading spinner until it does
             showSpinner(document.getElementById("container"))
@@ -265,7 +263,7 @@ const TestView = (props) => {
                 <div className='w-1/3 flex-col'>
                     <div className='h-96 my-2'>
                         <div className='border-1 rounded-2xl p-1'>
-                            {/* <Map height="380px" /> */}
+                            <Map height="380px" onResize={showMore} />
                         </div>
                     </div>
                     <div className='h-1/2 py-5 px-2'>
