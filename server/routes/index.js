@@ -5,7 +5,8 @@ const heroesService = require('../hero-service');
 const testService = require('../testService');
 const tduResService = require('../tduResService');
 const calendarService = require('../calendarService');
-const atlassianservice = require('../atlassianservice')
+const atlassianservice = require('../atlassianservice');
+const weatherService = require('../weatherService')
 
 router.get('/heroes', (req, res) => {
   heroesService.get(req, res);
@@ -73,6 +74,10 @@ router.get('/bitbucket/branches', (req, res) => {
 
 router.get('/bitbucket/commits/:branch', (req, res) => {
   atlassianservice.getCommits(req, res);
+})
+
+router.get('/weather', (req, res) => {
+  weatherService.get(req, res);
 })
 
 module.exports = router;

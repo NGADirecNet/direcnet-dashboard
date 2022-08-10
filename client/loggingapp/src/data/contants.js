@@ -37,3 +37,12 @@ export const newTestSuite = {
     type: "new"
 };
 
+export const days = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday'
+]
