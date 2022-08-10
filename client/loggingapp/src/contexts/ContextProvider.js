@@ -24,8 +24,7 @@ export const ContextProvider = ({ children }) => {
     const [tests, setTests] = useState([])
     const [currentDemo, setCurrentDemo] = useState({})
     const [cal, setCal] = useState([])
-
-    const [branches, setBranches] = useState([])
+    const [branches, setBranches] = useState([]);
 
     useEffect(() => {
         testApiService.get()
@@ -47,7 +46,6 @@ export const ContextProvider = ({ children }) => {
                     setBranches(json.values)
                 }
             })
-
     }, [])
 
     // useEffect(() => {
@@ -77,7 +75,7 @@ export const ContextProvider = ({ children }) => {
                 cal,
                 setCal,
                 branches,
-                setBranches
+                setBranches,
             }}
         >
             {children}

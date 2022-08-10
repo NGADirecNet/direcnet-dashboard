@@ -3,8 +3,13 @@ import { IoIosMore } from 'react-icons/io'
 import { BsCloudSun, BsCalendar3, BsCloudRainHeavy, BsCloudRain, BsSun } from 'react-icons/bs'
 import { TbPlayerTrackNext } from 'react-icons/tb'
 import { AiOutlineCloud, } from 'react-icons/ai'
+import { useWeatherContext } from '../../contexts/WeatherContextProvider'
+import { apiIcon } from '../../data/weatherUtil'
+import { days } from '../../data/contants'
 
 const WeatherWidget = () => {
+
+    const { weatherData, daily } = useWeatherContext();
 
     /**
      * Returns frequently used circular icon button
@@ -49,8 +54,8 @@ const WeatherWidget = () => {
         <div className="w-400 bg-white dark:text-gray-200 dark:bg-secondary-dark-bg rounded-2xl p-6 m-3">
             <div className="flex justify-between">
                 <p className="text-xl font-semibold">Testing Conditions</p>
-                <button 
-                    type="button" 
+                <button
+                    type="button"
                     className="text-xl font-semibold text-gray-500"
                     onClick={() => window.open('https://radar.weather.gov')}
                 >
@@ -75,15 +80,19 @@ const WeatherWidget = () => {
                         {getButtonIcon("#03C9D7", "#E5FAFB", <BsCalendar3 />)}
                         <div>
                             <p className="text-md font-semibold">Week Forecast:</p>
-                            <p className="text-sm text-gray-400">0/0/2022 - 0/0/2022</p>
+                            <p className="text-sm text-gray-400">
+                                {daily ?
+                                    `${new Date(daily[0].dt * 1000).toLocaleDateString()} - ${new Date(daily[daily.length - 4].dt * 1000).toLocaleDateString()}`
+                                    : '0/0/2022 - 0/0/2022'}
+                            </p>
                         </div>
                     </div>
                     <div className='flex gap-4 mt-4 justify-center items-center pb-3 border-b-1'>
-                        {getDay("gray", "#FAFAFB", <AiOutlineCloud />, "Mon")}
-                        {getDay("#03C9D7", "#E5FAFB", <BsCloudRainHeavy />, "Tues")}
-                        {getDay("#03C9D7", "#E5FAFB", <BsCloudRain />, "Wed")}
-                        {getDay("#03C9D7", "#E5FAFB", <BsCloudRainHeavy />, "Thu")}
-                        {getDay("", "rgb(254, 201, 15)", <BsCloudSun />, "Fri")}
+                        {/* todo exclude weekend days */}
+                        {daily.map((d, idx) => {
+                            if (idx > 4) return <></>;
+                            return getDay("gray", "", apiIcon.find(i => i.name === d.weather[0].icon.slice(0, 2)).icon, days[new Date(d.dt * 1000).getUTCDay()].slice(0, 3))
+                        })}
                     </div>
                     <div className="flex gap-4 mt-4">
                         {getButtonIcon("rgb(0, 194, 146)", "rgb(235, 250, 242)", <TbPlayerTrackNext />)}
