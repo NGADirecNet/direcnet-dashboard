@@ -89,7 +89,7 @@ const WeatherWidget = () => {
                     </div>
                     <div className='flex gap-4 mt-4 justify-center items-center pb-3 border-b-1'>
                         {/* todo exclude weekend days */}
-                        {daily.map((d, idx) => {
+                        {daily && daily.map((d, idx) => {
                             if (idx > 4) return <></>;
                             return getDay("gray", "", apiIcon.find(i => i.name === d.weather[0].icon.slice(0, 2)).icon, days[new Date(d.dt * 1000).getUTCDay()].slice(0, 3))
                         })}

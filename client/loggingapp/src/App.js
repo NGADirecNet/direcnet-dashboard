@@ -4,7 +4,7 @@ import { FiSettings } from 'react-icons/fi'
 import { TooltipComponent } from '@syncfusion/ej2-react-popups'
 
 import { Footer, Sidebar, NavBar } from './components';
-import { Dashboard, Calendar, Weather, Charts, EmanePage, TestingPage, TestView } from './pages';
+import { Dashboard, Calendar, Weather, Charts, EmanePage, TestingPage, TestView, MapsPage, MapsView } from './pages';
 import './App.css'
 
 import { useStateContext } from './contexts/ContextProvider';
@@ -47,11 +47,11 @@ const App = () => {
                             <Route path='/' element={<Dashboard />} />
                             <Route path='/home' element={<Dashboard />} />
                             {/* Pages */}
-                            <Route path='/tests' element={<TestingPage />} >
-                                {/* Todo change test view to subset of tests url */}
-                                {/* <Route path='test1' element={<TestView />} /> */}
-                            </Route>
+                            <Route path='/tests' element={<TestingPage />} />
                             <Route path='/emane' element={<EmanePage />} />
+                            <Route path='/maps' element={<MapsPage />} />
+                            <Route path='/maps/:id' element={<MapsView />} />
+                            <Route path='/maps/new' element={<MapsView new />} />
 
                             {/* Apps */}
                             <Route path='/calendar' element={<Calendar />} />

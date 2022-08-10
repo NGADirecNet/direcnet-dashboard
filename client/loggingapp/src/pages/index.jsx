@@ -7,3 +7,5 @@ export { default as Calendar } from './Calendar';
 export { default as Area } from './Charts/Area';
 export { default as Bar } from './Charts/Bar';
 export { default as TestView } from './TestView'
+export { default as MapsPage } from './MapsPage'
+export { default as MapsView } from './MapsView'

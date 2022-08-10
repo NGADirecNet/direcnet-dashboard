@@ -4,6 +4,7 @@ import { BiBuildingHouse } from 'react-icons/bi'
 import { GoEye } from 'react-icons/go'
 import { IoMdAdd } from 'react-icons/io'
 import { getTestType } from './dataUtil'
+import { FiMap } from 'react-icons/fi'
 
 export const outdoorLogo = {
     Type: 'Outdoor Test',
@@ -36,6 +37,13 @@ export const demoLogo = {
 export const newLogo = {
     Type: 'New Test Type',
     Icon: <IoMdAdd />,
+    IconColor: 'rgb(228, 106, 118)',
+    IconBg: 'rgb(255, 244, 229)',
+}
+
+export const mapLogo = {
+    Type: 'Create Test Map',
+    Icon: <FiMap />,
     IconColor: 'rgb(228, 106, 118)',
     IconBg: 'rgb(255, 244, 229)',
 }

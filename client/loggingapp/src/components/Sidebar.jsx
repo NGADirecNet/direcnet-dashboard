@@ -8,6 +8,7 @@ import { VscDashboard, VscRadioTower } from 'react-icons/vsc';
 import { RiComputerLine } from 'react-icons/ri';
 import { AiOutlineCalendar, AiOutlineAreaChart } from 'react-icons/ai';
 import { TiWeatherPartlySunny } from 'react-icons/ti';
+import { FiMap } from 'react-icons/fi';
 
 const Sidebar = () => {
   const { activeMenu, setActiveMenu, screenSize, currentColor } = useStateContext();
@@ -33,6 +34,10 @@ const Sidebar = () => {
         {
           name: 'emane',
           icon: <RiComputerLine />,
+        },
+        {
+          name: 'maps',
+          icon: <FiMap />,
         },
       ],
     },

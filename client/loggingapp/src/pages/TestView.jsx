@@ -63,7 +63,7 @@ const TestView = (props) => {
             setSaved(true);
             hideSpinner(document.getElementById("container"))
         }
-        
+
     }, [tests, params.id])
 
     // types: sunny, partly cloudy, cloudy
@@ -263,7 +263,109 @@ const TestView = (props) => {
                 <div className='w-1/3 flex-col'>
                     <div className='h-96 my-2'>
                         <div className='border-1 rounded-2xl p-1'>
-                            <Map height="380px" onResize={showMore} />
+                            <Map height="380px" onResize={showMore}
+                                scene={{
+                                    header: 'First action',
+                                    subheader: 'Pads gain a connection',
+                                    mapCenter: {
+                                        latitude: 43.039053,
+                                        longitude: -75.656773
+                                    },
+                                    zoomFactor: 16,
+                                    markers: [
+                                        {
+                                            visible: true,
+                                            dataSource: [
+                                                {
+                                                    latitude: 43.040085,
+                                                    longitude: -75.656823,
+                                                    nodeInfo: {
+                                                        name: 'Pad 12'
+                                                    }
+                                                }
+                                            ],
+                                            tooltipSettings: {
+                                                visible: true,
+                                                valuePath: 'nodeInfo.name'
+                                            },
+                                            width: '25',
+                                            height: '25',
+                                            shape: 'Diamond',
+                                            fill: 'white',
+                                            border: {
+                                                width: 2,
+                                                color: '#333'
+                                            }
+                                        },
+                                        {
+                                            visible: true,
+                                            dataSource: [
+                                                {
+                                                    latitude: 43.039095,
+                                                    longitude: -75.655946,
+                                                    nodeInfo: {
+                                                        name: 'Pad 11'
+                                                    }
+                                                }
+                                            ],
+                                            tooltipSettings: {
+                                                visible: true,
+                                                valuePath: 'nodeInfo.name'
+                                            },
+                                            width: '25',
+                                            height: '25',
+                                            shape: 'Diamond',
+                                            fill: 'white',
+                                            border: {
+                                                width: 2,
+                                                color: '#333'
+                                            }
+                                        },
+                                        {
+                                            visible: true,
+                                            dataSource: [
+                                                {
+                                                    latitude: 43.038083,
+                                                    longitude: -75.656858,
+                                                    nodeInfo: {
+                                                        name: 'Pad 10'
+                                                    }
+                                                }
+                                            ],
+                                            tooltipSettings: {
+                                                visible: true,
+                                                valuePath: 'nodeInfo.name'
+                                            },
+                                            width: '25',
+                                            height: '25',
+                                            shape: 'Diamond',
+                                            fill: 'white',
+                                            border: {
+                                                width: 2,
+                                                color: '#333'
+                                            }
+                                        },
+                                    ],
+                                    lines: [
+                                        {
+                                            visible: true,
+                                            width: 100000,
+                                            color: 'green',
+                                            dashArray: 3,
+                                            from: [43.040085, -75.656823],
+                                            to: [43.039095, -75.655946],
+                                        },
+                                        {
+                                            visible: true,
+                                            width: 100000,
+                                            color: 'green',
+                                            dashArray: 3,
+                                            from: [43.038083, -75.656858],
+                                            to: [43.040085, -75.656823]
+                                        },
+                                    ]
+                                }}
+                            />
                         </div>
                     </div>
                     <div className='h-1/2 py-5 px-2'>

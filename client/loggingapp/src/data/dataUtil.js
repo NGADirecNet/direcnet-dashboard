@@ -1,7 +1,7 @@
 /**
  * Misc. Utility functions for data populated across all areas of Dashboard
  */
- import { outdoorLogo, indoorLogo, emaneLogo, demoLogo, newLogo } from './dashLogos'
+ import { outdoorLogo, indoorLogo, emaneLogo, demoLogo, newLogo, mapLogo } from './dashLogos'
 /**
  * Get time until or time since a certain date
  * @param {*} date - the date we are calculating from
@@ -48,4 +48,8 @@ export function getTestType(testType) {
                 : testType === 'indoor' ? { ...indoorLogo }
                     : testType === 'emane' ? { ...emaneLogo }
                         : { ...newLogo }
+}
+
+export function getMapLogo() {
+    return { ...mapLogo }
 }

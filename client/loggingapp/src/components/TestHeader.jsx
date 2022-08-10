@@ -12,7 +12,7 @@ const dropdownItems = [
     { "Name": "DEMO", "value": "demo"}
 ]
 
-const TestHeader = ({ category, categoryChange, title, titleChange, showMore, setShowMore, saved, saveChanges }) => {
+const TestHeader = ({ category, categoryChange, title, titleChange, showMore, setShowMore, saved, saveChanges, hasDetails=true }) => {
     const [dropdown, setDropdown] = useState()
     const [editCategory, setEditCategory] = useState(false);
     const { currentColor } = useStateContext();
@@ -50,6 +50,7 @@ const TestHeader = ({ category, categoryChange, title, titleChange, showMore, se
 
             </div>
             <div className='space-y-1'>
+                {hasDetails &&
                 <div
                     className='h-10 p-2 flex justify-center items-center gap-5 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray cursor-pointer border-1'
                     onClick={() => setShowMore(prev => !prev)}
@@ -58,7 +59,7 @@ const TestHeader = ({ category, categoryChange, title, titleChange, showMore, se
                     <span className='capitalize'>
                         {`Show ${showMore ? 'Less' : 'More'}`}
                     </span>
-                </div>
+                </div>}
                 <div
                     className={saved ? 
                         'h-10 p-2 flex justify-center items-center gap-5 rounded-lg text-md text-gray-700 dark:text-gray-200 cursor-pointer border-1' : 

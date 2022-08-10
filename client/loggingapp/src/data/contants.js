@@ -46,3 +46,15 @@ export const days = [
     'Friday',
     'Saturday'
 ]
+
+export const newMapsPane = {
+    header: "New Action Header",
+    subheader: "New Action Subheader",
+    mapCenter: {
+        latitute: 0,
+        longitude: 0
+    },
+    zoomFactor: 1,
+    markers: [],
+    lines: []
+};
