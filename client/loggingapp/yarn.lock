@@ -1743,7 +1743,7 @@
     "@syncfusion/ej2-pdf-export" "~19.4.52"
     "@syncfusion/ej2-svg-base" "~19.4.52"
 
-"@syncfusion/ej2-circulargauge@~19.4.52":
+"@syncfusion/ej2-circulargauge@19.4.52", "@syncfusion/ej2-circulargauge@~19.4.52":
   version "19.4.52"
   resolved "https://registry.yarnpkg.com/@syncfusion/ej2-circulargauge/-/ej2-circulargauge-19.4.52.tgz#2a0e3a0b1a53f6dd6813f6a51f5acfa3e1303618"
   integrity sha512-0O8w0zTsQtEEBJ4u8gV2A2qGpL5ify7tDUw30xCOQmtisvGLSyT1IFvBUtzyRyZxJd7PNh+VUWsLSgJXD2Tdxw==
@@ -2072,7 +2072,7 @@
     "@syncfusion/ej2-base" "~19.4.52"
     "@syncfusion/ej2-buttons" "~19.4.53"
 
-"@syncfusion/ej2-progressbar@~19.4.55":
+"@syncfusion/ej2-progressbar@19.4.55", "@syncfusion/ej2-progressbar@~19.4.55":
   version "19.4.55"
   resolved "https://registry.yarnpkg.com/@syncfusion/ej2-progressbar/-/ej2-progressbar-19.4.55.tgz#26f902be50f4c386bd4c72d1464c784a92357c88"
   integrity sha512-+SBrL4iAyncUQY8wzzifMrQ2CGkiv8DeBoZdf9K5ispfLJlBJM+cfUAJvhnBZ1sVUjDQcO8DEL21AWIcfZQdfg==
@@ -2117,6 +2117,15 @@
     "@syncfusion/ej2-base" "~19.4.52"
     "@syncfusion/ej2-charts" "19.4.54"
     "@syncfusion/ej2-react-base" "~19.4.53"
+
+"@syncfusion/ej2-react-circulargauge@^19.4.52":
+  version "19.4.52"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-react-circulargauge/-/ej2-react-circulargauge-19.4.52.tgz#bc5887e8f771e2a1e35d4501f287f0a30f593bf8"
+  integrity sha512-SAg6/scgGxj6pNKRYq59srwFRW1wTN/2PVbR9vzBxD8T4rB/HIHL0YwHqIFWxn/t5ms2rH7Uf1ZA05XpT5x5TQ==
+  dependencies:
+    "@syncfusion/ej2-base" "~19.4.52"
+    "@syncfusion/ej2-circulargauge" "19.4.52"
+    "@syncfusion/ej2-react-base" "~19.4.52"
 
 "@syncfusion/ej2-react-dropdowns@^19.4.52":
   version "19.4.56"
@@ -2171,6 +2180,15 @@
     "@syncfusion/ej2-base" "~19.4.52"
     "@syncfusion/ej2-popups" "19.4.53"
     "@syncfusion/ej2-react-base" "~19.4.53"
+
+"@syncfusion/ej2-react-progressbar@^19.4.52":
+  version "19.4.55"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-react-progressbar/-/ej2-react-progressbar-19.4.55.tgz#2458b9d0bd6dfe3f0e7b1a69b820adb226f93773"
+  integrity sha512-dF6PnNd9UgqSRnN92dU2seR8/8DXjqNThe4ZCcwkQbzRaMpKkrUEznj88Z/j18r/XA4dQEoZE4J2vEf0g/32Ag==
+  dependencies:
+    "@syncfusion/ej2-base" "~19.4.52"
+    "@syncfusion/ej2-progressbar" "19.4.55"
+    "@syncfusion/ej2-react-base" "~19.4.55"
 
 "@syncfusion/ej2-react-richtexteditor@^19.4.50":
   version "19.4.56"
