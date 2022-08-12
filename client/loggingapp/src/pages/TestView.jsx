@@ -13,7 +13,7 @@ import { getTestType } from '../data/dataUtil';
 const TestView = (props) => {
     const params = useParams();
     const navigate = useNavigate();
-    const { tests, setTests, currentDemo } = useStateContext();
+    const { tests, setTests, currentDemo, sceneMaps } = useStateContext();
     // The selected scenario that we model on the right hand map, first scenario by default
     const [selectedScenario, setSelectedScenario] = useState(null);
     // test suite local state object, gets copied to remote database when we click save
@@ -28,6 +28,30 @@ const TestView = (props) => {
     const [showingAddNote, showAddNote] = useState(false);
     const [showingAddTime, showAddTime] = useState(false);
 
+    const [scene, setCurrentScene] = useState(null)
+    const [currentAction, setCurrentAction] = useState(null)
+
+    useEffect(() => {
+        if (scene && currentAction !== null) {
+            setTimeout(() => {
+                if (currentAction === scene.actions.length - 1)
+                    setCurrentAction(0)
+                else    
+                    setCurrentAction(currentAction + 1)
+            }, [2000])
+        }
+        else if (scene & currentAction === null) {
+            setCurrentAction(0)
+        }
+    }, [currentAction, scene])
+    useEffect(() => {
+        console.log("scene maps", sceneMaps)
+        if (sceneMaps) {
+            setCurrentScene(sceneMaps[0])
+            setCurrentAction(0) // this will break if there are no panes in that scene
+        }
+    }, [sceneMaps])
+
     useEffect(() => {
         createSpinner({
             target: document.getElementById("container")
@@ -36,7 +60,7 @@ const TestView = (props) => {
 
     // default selected scenario to the first test in the timeline
     useEffect(() => {
-        // console.log("test", test)
+        console.log("test", test)
         setTestType(type)
         if (selectedScenario === null && test.timeline)
             setSelectedScenario(test.timeline[0].header)
@@ -263,109 +287,9 @@ const TestView = (props) => {
                 <div className='w-1/3 flex-col'>
                     <div className='h-96 my-2'>
                         <div className='border-1 rounded-2xl p-1'>
-                            <Map height="380px" onResize={showMore}
-                                scene={{
-                                    header: 'First action',
-                                    subheader: 'Pads gain a connection',
-                                    mapCenter: {
-                                        latitude: 43.039053,
-                                        longitude: -75.656773
-                                    },
-                                    zoomFactor: 16,
-                                    markers: [
-                                        {
-                                            visible: true,
-                                            dataSource: [
-                                                {
-                                                    latitude: 43.040085,
-                                                    longitude: -75.656823,
-                                                    nodeInfo: {
-                                                        name: 'Pad 12'
-                                                    }
-                                                }
-                                            ],
-                                            tooltipSettings: {
-                                                visible: true,
-                                                valuePath: 'nodeInfo.name'
-                                            },
-                                            width: '25',
-                                            height: '25',
-                                            shape: 'Diamond',
-                                            fill: 'white',
-                                            border: {
-                                                width: 2,
-                                                color: '#333'
-                                            }
-                                        },
-                                        {
-                                            visible: true,
-                                            dataSource: [
-                                                {
-                                                    latitude: 43.039095,
-                                                    longitude: -75.655946,
-                                                    nodeInfo: {
-                                                        name: 'Pad 11'
-                                                    }
-                                                }
-                                            ],
-                                            tooltipSettings: {
-                                                visible: true,
-                                                valuePath: 'nodeInfo.name'
-                                            },
-                                            width: '25',
-                                            height: '25',
-                                            shape: 'Diamond',
-                                            fill: 'white',
-                                            border: {
-                                                width: 2,
-                                                color: '#333'
-                                            }
-                                        },
-                                        {
-                                            visible: true,
-                                            dataSource: [
-                                                {
-                                                    latitude: 43.038083,
-                                                    longitude: -75.656858,
-                                                    nodeInfo: {
-                                                        name: 'Pad 10'
-                                                    }
-                                                }
-                                            ],
-                                            tooltipSettings: {
-                                                visible: true,
-                                                valuePath: 'nodeInfo.name'
-                                            },
-                                            width: '25',
-                                            height: '25',
-                                            shape: 'Diamond',
-                                            fill: 'white',
-                                            border: {
-                                                width: 2,
-                                                color: '#333'
-                                            }
-                                        },
-                                    ],
-                                    lines: [
-                                        {
-                                            visible: true,
-                                            width: 100000,
-                                            color: 'green',
-                                            dashArray: 3,
-                                            from: [43.040085, -75.656823],
-                                            to: [43.039095, -75.655946],
-                                        },
-                                        {
-                                            visible: true,
-                                            width: 100000,
-                                            color: 'green',
-                                            dashArray: 3,
-                                            from: [43.038083, -75.656858],
-                                            to: [43.040085, -75.656823]
-                                        },
-                                    ]
-                                }}
-                            />
+                            {(currentAction !== null) && <Map height="380px" onResize={showMore}
+                                scene={scene.actions[currentAction]}
+                            />}
                         </div>
                     </div>
                     <div className='h-1/2 py-5 px-2'>

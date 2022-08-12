@@ -22,6 +22,7 @@ const testSchema = new Schema(
                 description: String
             }],
             attachments: [],
+            scene: String,
         }],
         notes: [],
         time: [{

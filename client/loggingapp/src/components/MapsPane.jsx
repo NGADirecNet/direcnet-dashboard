@@ -51,25 +51,26 @@ export default function MapsPane({ action, isSelected, setSelected, isNewPane = 
     // add a Pane to test suite, appending (x) to already new panes
     const addPane = () => {
         // find new panes that already exist
-        const newPanes = scene.filter(a => a.header.includes("New Action Header"))
+        const newPanes = scene.actions.filter(a => a.header.includes("New Action Header"))
         // append copy string to header so we do not have duplicate panes selected
         var copyString = newPanes.length ? ` (${newPanes.length})` : ""
         // create our new pane
         const addNewPane = { ...newMapsPane, header: newMapsPane.header + copyString }
         // add new pane to our test suite
-        setScene([
+        setScene({
             ...scene,
-            addNewPane
-        ])
+            actions: [...scene.actions, addNewPane]
+        })
         setSaved(false)
         // set selected pane to newly created pane
-        setSelected(scene.length - 1)
+        setSelected(scene.actions.length - 1)
     }
 
     const removePane = () => {
-        setScene([
-            ...scene.filter(a => a !== pane)
-        ])
+        setScene({
+            ...scene,
+            actions: [...scene.actions.filter(a => a !== pane)]
+        })
         setSaved(false);
         if (isSelected) setSelected(0)
     }
@@ -78,44 +79,50 @@ export default function MapsPane({ action, isSelected, setSelected, isNewPane = 
     const fieldChange = (event, field, idx = null, descriptor = null) => {
         // events or setups require an idx and descriptor of which key we want
         if (field === 'latitude' || field === 'longitude') {
-            setScene([
-                ...scene.map(a => (a === pane ? { ...a, mapCenter: { ...a.mapCenter, [field]: parseFloat(event.value) } } : a))
-            ])
+            setScene({
+                ...scene,
+                actions: [...scene.actions.map(a => (a === pane ? { ...a, mapCenter: { ...a.mapCenter, [field]: parseFloat(event.value) } } : a))]
+            })
         }
         else {
             // update state, assuming arg 'field' corresponds to object key and event.value corresponds to value
-            setScene([
-                ...scene.map(a => (a === pane ? { ...a, [field]: event.value } : a))
-            ])
+            setScene({
+                ...scene,
+                actions: [...scene.actions.map(a => (a === pane ? { ...a, [field]: event.value } : a))]
+            })
         }
         setSaved(false);
     }
 
     const addMarker = () => {
-        setScene([
-            ...scene.map(a => (a === pane ? { ...a, markers: [...a.markers, newMarker] } : a))
-        ]);
+        setScene({
+            ...scene,
+            actions: [...scene.actions.map(a => (a === pane ? { ...a, markers: [...a.markers, newMarker] } : a))]
+        });
         setSaved(false);
     }
 
     const removeMarker = (idx) => {
-        setScene([
-            ...scene.map(a => (a === pane ? { ...a, markers: [...a.markers.filter((m, i) => i !== idx)] } : a))
-        ]);
+        setScene({
+            ...scene,
+            actions: [...scene.actions.map(a => (a === pane ? { ...a, markers: [...a.markers.filter((m, i) => i !== idx)] } : a))]
+        });
         setSaved(false);
     }
 
     const addLine = () => {
-        setScene([
-            ...scene.map(a => (a === pane ? { ...a, lines: [...a.lines, newLine] } : a))
-        ]);
+        setScene({
+            ...scene,
+            actions: [...scene.actions.map(a => (a === pane ? { ...a, lines: [...a.lines, newLine] } : a))]
+        });
         setSaved(false);
     }
 
     const removeLine = (idx) => {
-        setScene([
-            ...scene.map(a => (a === pane ? { ...a, lines: [...a.lines.filter((l, i) => i !== idx)] } : a))
-        ]);
+        setScene({
+            ...scene,
+            actions: [...scene.actions.map(a => (a === pane ? { ...a, lines: [...a.lines.filter((l, i) => i !== idx)] } : a))]
+        });
         setSaved(false);
     }
 
@@ -188,13 +195,14 @@ export default function MapsPane({ action, isSelected, setSelected, isNewPane = 
                     {(!pane.markers || !pane.markers.length) && <AddButton onClick={addMarker} />}
                     {pane.markers && pane.markers.map((marker, idx) => {
                         const markComp = (
-                            <MapMarkerInfo 
-                                info={marker} 
+                            <MapMarkerInfo
+                                info={marker}
                                 remove={() => removeMarker(idx)}
                                 scene={scene}
                                 setScene={setScene}
                                 idx={idx}
                                 pane={pane}
+                                onChange={(e => setSaved(false))}
                             />
                         )
                         if (idx === pane.markers.length - 1)
@@ -218,13 +226,14 @@ export default function MapsPane({ action, isSelected, setSelected, isNewPane = 
                     {(!pane.lines || !pane.lines.length) && <AddButton onClick={addLine} />}
                     {pane.lines && pane.lines.map((line, idx) => {
                         const lineComp = (
-                            <MapLineInfo 
-                                info={line} 
-                                remove={() => removeLine(idx)} 
+                            <MapLineInfo
+                                info={line}
+                                remove={() => removeLine(idx)}
                                 scene={scene}
                                 setScene={setScene}
                                 idx={idx}
                                 pane={pane}
+                                onChange={(e => setSaved(false))}
                             />
                         )
                         if (idx === pane.lines.length - 1)

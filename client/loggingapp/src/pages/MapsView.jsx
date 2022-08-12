@@ -1,52 +1,51 @@
 import React, { useState, useEffect } from 'react'
 import { TestHeader, Map, TestPane, TestNote, TestTime, AddButton, MapsPane } from '../components';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useStateContext } from '../contexts/ContextProvider';
 import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import { getMapLogo } from '../data/dataUtil';
 import { newMapsPane } from '../data/contants';
 import { MdNavigateNext, MdNavigateBefore } from 'react-icons/md';
+import mapsApiService from '../mapsApi';
 
 const MapsView = (props) => {
+    const { sceneMaps, setSceneMaps } = useStateContext();
+    const navigate = useNavigate();
     const params = useParams();
     const [saved, setSaved] = useState(false);
-    const [scene, setScene] = useState([]);
+    const [scene, setScene] = useState(null);
     const [selectedAction, setSelectedAction] = useState(0);
 
     // default selected scenario to the first test in the timeline
     useEffect(() => {
-        console.log("SCENE", scene)
-        console.log('sel ac', selectedAction)
-        console.log("sel", scene[selectedAction])
-        if (selectedAction === null && scene.length)
+        if (selectedAction === null && scene.actions.length)
             setSelectedAction(0)
     }, [selectedAction, scene])
 
     // query the data connected to that scene
     useEffect(() => {
-        /*if (!scenes.length) {
-
+        if (!sceneMaps.length) {
+            //todo loading spinner
         }
-        else*/ if (params.id) {
-            // setTest(tests.find(test => test._id.toString() === params.id));
-            // set scene scenes . find from db
+        else if (params.id) {
+             setScene(sceneMaps.find(s => s._id.toString() === params.id));
             setSaved(true);
         }
         else if (props.new) {
-            // setTest(newTestSuite);
             // set scene new test scene
-            setScene([newMapsPane]);
+            setScene({name : 'New Scene', actions: [newMapsPane]});
         }
         else if (params.id === undefined) {
             // setTest(currentDemo);
             setSaved(true);
         }
         
-    }, [])
+    }, [sceneMaps])
     //fixme this will be scenes and params.id not just params id
 
     const getLogoAndHeader = () => {
-        const logo = getMapLogo();
+        if (!scene) return <></>
+        const logo = getMapLogo(props.new);
         return (
             <>
                 <a
@@ -76,11 +75,11 @@ const MapsView = (props) => {
                     //     setSaved(false)
                     // }}
                     hasDetails={false}
-                    title={scene.header}
+                    title={scene.name}
                     titleChange={(val) => {
                         setScene({
-                            ...test,
-                            header: val
+                            ...scene,
+                            name: val
                         });
                         setSaved(false);
                     }}
@@ -93,36 +92,36 @@ const MapsView = (props) => {
 
     // make api call creating / updating map scene
     const saveChanges = () => {
-        // if (props.new) {
-        //     testApiService.create(test)
-        //         .then(res => {
-        //             if (res) {
-        //                 setTests([
-        //                     ...tests,
-        //                     res
-        //                 ])
-        //                 navigate('/test/' + res._id)
-        //             }
+        if (props.new) {
+            mapsApiService.create(scene)
+                .then(res => {
+                    if (res) {
+                        setSceneMaps([
+                            ...sceneMaps,
+                            res
+                        ])
+                        navigate('/maps/' + res._id)
+                    }
 
-        //         })
-        //     // .catch(err => console.log("ERR", err));
-        // }
-        // else
-        //     testApiService.update(test)
-        //         .then(res => {
-        //             if (res)
-        //                 setTests([
-        //                     ...tests.filter(t => t._id !== test._id),
-        //                     test
-        //                 ])
-        //         });
-        // setSaved(true);
-        console.log("saving map scene");
+                })
+            // .catch(err => console.log("ERR", err));
+        }
+        else
+            mapsApiService.update(scene)
+                .then(res => {
+                    console.log("RES", res)
+                    if (res)
+                        setSceneMaps([
+                            ...sceneMaps.filter(s => s._id !== scene._id),
+                            scene
+                        ])
+                });
+        setSaved(true);
     }
 
     const goToNextAction = () => {
         // if we are at the last action, don't go anywhere
-        if (!(selectedAction === scene.length - 1))
+        if (!(selectedAction === scene.actions.length - 1))
         // otherwise proceed to the next action using idx of current action
             setSelectedAction(selectedAction + 1)
     }
@@ -144,10 +143,10 @@ const MapsView = (props) => {
             <div className='flex gap-2'>
                 {/* Left column */}
                 <div className='w-2/3'>
-                    {scene && scene.map((action, idx) =>
+                    {(scene &&scene.actions) && scene.actions.map((action, idx) =>
                         <MapsPane
                             action={action}
-                            isSelected={selectedAction === scene.indexOf(action)}
+                            isSelected={selectedAction === scene.actions.indexOf(action)}
                             setSelected={(a) => setSelectedAction(a)}
                             scene={scene}
                             setScene={setScene}
@@ -171,10 +170,10 @@ const MapsView = (props) => {
                 {/* Right Column */}
                 <div className='w-1/3 flex-col'>
                     <div className='h-96 my-2'>
-                        {scene.length && 
+                        {(scene && scene.actions.length) ? ( 
                         <div className='border-1 rounded-2xl p-1'>
-                            {scene[selectedAction] && <Map height="380px" scene={scene[selectedAction]} />}
-                        </div>}
+                            {scene.actions[selectedAction] && <Map height="380px" scene={scene.actions[selectedAction]} />}
+                        </div>) : <></>}
                     </div>
                     <div className=' flex py-5 px-2 items-center justify-center gap-3'>
                         <button
@@ -183,7 +182,7 @@ const MapsView = (props) => {
                         >
                             <MdNavigateBefore />
                         </button>
-                        {scene[selectedAction] && scene[selectedAction].header}
+                        {scene && scene.actions[selectedAction] && scene.actions[selectedAction].header}
                         <button 
                             className='border-1 p-2 rounded-lg'
                             onClick={goToNextAction}

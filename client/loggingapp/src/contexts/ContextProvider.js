@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import testApiService from '../testApi';
 import calendarApiService from '../calendarApi';
 import atlassianApiService from '../atlassianApi';
+import mapsApiService from '../mapsApi';
 
 const StateContext = createContext();
 
@@ -25,6 +26,7 @@ export const ContextProvider = ({ children }) => {
     const [currentDemo, setCurrentDemo] = useState({})
     const [cal, setCal] = useState([])
     const [branches, setBranches] = useState([]);
+    const [sceneMaps, setSceneMaps] = useState([]);
 
     useEffect(() => {
         testApiService.get()
@@ -44,6 +46,13 @@ export const ContextProvider = ({ children }) => {
             .then(json => {
                 if (json) {
                     setBranches(json.values)
+                }
+            })
+        mapsApiService.get()
+            .then(json => {
+                if (json) {
+                    console.log("JSON RESPONSE", json)
+                    setSceneMaps(json);
                 }
             })
     }, [])
@@ -76,6 +85,8 @@ export const ContextProvider = ({ children }) => {
                 setCal,
                 branches,
                 setBranches,
+                sceneMaps,
+                setSceneMaps
             }}
         >
             {children}

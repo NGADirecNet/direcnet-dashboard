@@ -3,7 +3,7 @@ import EditableTextField from './EditableTextField';
 import HoverableTestInfo from './HoverableTestInfo';
 
 // holds state for node hovering, renders event object from timeline to the DOM
-export default function MapMarkerInfo({ info, remove, scene, setScene, idx, pane }) {
+export default function MapMarkerInfo({ info, remove, scene, setScene, idx, pane, onChange }) {
 
     const fieldChange = (event, field) => {
         // lat long or name need to be dataSource[0]
@@ -12,35 +12,39 @@ export default function MapMarkerInfo({ info, remove, scene, setScene, idx, pane
             if (field === 'name') {
                 newInfo = newInfo = {
                     ...info,
-                    dataSource: [...info.dataSource.map(d => {return {...d, nodeInfo: { name : event.value }}})]
+                    dataSource: [...info.dataSource.map(d => { return { ...d, nodeInfo: { name: event.value } } })]
                 }
             }
             else newInfo = {
                 ...info,
-                dataSource: [...info.dataSource.map(d => {return {...d, [field]: parseFloat(event.value) }})]
+                dataSource: [...info.dataSource.map(d => { return { ...d, [field]: parseFloat(event.value) } })]
             }
         }
         // border needs to be border.width or border.color
         else if (field === 'borderwidth' || field === 'bordercolor') {
-            if (field ==='borderwidth') {
-                newInfo = {...info, border: {...info.border, width: event.value}}
+            if (field === 'borderwidth') {
+                newInfo = { ...info, border: { ...info.border, width: event.value } }
             }
             else {
-                newInfo = {...info, border: {...info.border, color: event.value}}
+                newInfo = { ...info, border: { ...info.border, color: event.value } }
             }
         }
         else {
-            newInfo = {...info, [field]: event.value}
+            newInfo = { ...info, [field]: event.value }
         }
-        setScene([
-            ...scene.map(a => 
-                (a === pane ? { ...a, markers: [...a.markers.map((m, i) => 
+        setScene({
+            ...scene,
+            actions: [...scene.actions.map(a =>
+            (a === pane ? {
+                ...a, markers: [...a.markers.map((m, i) =>
                     (i === idx ? newInfo : m)
-                )]} : a)
-            )
-        ])
+                )]
+            } : a)
+            )]
+        })
+        onChange(event);
     }
-    
+
     return (
         <HoverableTestInfo
             remove={remove}
@@ -118,7 +122,7 @@ export default function MapMarkerInfo({ info, remove, scene, setScene, idx, pane
                         />
                     </div>
                     <div className='flex gap-1 items-center p-3'>
-                    <p className='font-semibold'>Border Color</p>
+                        <p className='font-semibold'>Border Color</p>
                         <EditableTextField
                             placeholder={info.border.color}
                             className='p-1'

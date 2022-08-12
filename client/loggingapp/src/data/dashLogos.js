@@ -42,10 +42,17 @@ export const newLogo = {
 }
 
 export const mapLogo = {
-    Type: 'Create Test Map',
+    Type: 'Create Test Scene',
     Icon: <FiMap />,
     IconColor: 'rgb(228, 106, 118)',
     IconBg: 'rgb(255, 244, 229)',
+}
+
+export const createdMapLogo = {
+    Type: 'Test Scene',
+    Icon: <FiMap />,
+    IconColor: 'rgb(0, 194, 146)',
+    IconBg: 'rgb(235, 250, 242)',
 }
 
 export const gridTestStatus = (props) => {

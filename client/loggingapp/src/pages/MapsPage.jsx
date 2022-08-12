@@ -1,14 +1,24 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button, Page } from '../components'
+import { Button, Page as PageWrap } from '../components'
 import { useStateContext } from '../contexts/ContextProvider'
+import { GridComponent, ColumnsDirective, ColumnDirective, Resize, Sort, ContextMenu, Filter, Page, ExcelExport, PdfExport, Edit, Inject } from '@syncfusion/ej2-react-grids';
+
 
 const MapsPage = () => {
-    const { currentColor } = useStateContext();
+    const { currentColor, sceneMaps } = useStateContext();
     const navigate = useNavigate();
+    let grid;
+
+    const rowSel = () => {
+        if (grid) {
+            const data = grid.getSelectedRecords()
+            navigate('/maps/' + data[0]._id)
+        }
+    }
 
     return (
-        <Page headerCat="Page" headerTitle="Maps">
+        <PageWrap headerCat="Page" headerTitle="Maps">
             <div className="m-3">
                 <Button
                     color="white"
@@ -18,7 +28,31 @@ const MapsPage = () => {
                     onClick={() => navigate('/maps/new')}
                 />
             </div>
-        </Page>
+            <GridComponent
+                // id="gridcomp"
+                dataSource={sceneMaps}
+                allowPaging
+                allowSorting
+                allowExcelExport
+                allowPdfExport
+                // contextMenuItems={contextMenuItems}
+                // editSettings={editing}
+                rowSelected={rowSel}
+                ref={g => grid = g}
+                // sortSettings={{
+                //     columns: [{
+                //         field: 'date',
+                //         direction: 'Ascending'
+                //     }]
+                // }}
+            >
+                {/* <ColumnsDirective> */}
+                    {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+                    {/* {testsGrid.map((item, index) => <ColumnDirective key={index} {...item} />)} */}
+                {/* </ColumnsDirective> */}
+                <Inject services={[Resize, Sort, ContextMenu, Filter, Page, ExcelExport, Edit, PdfExport]} />
+            </GridComponent>
+        </PageWrap>
     )
 }
 

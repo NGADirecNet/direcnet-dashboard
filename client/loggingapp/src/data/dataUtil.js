@@ -1,13 +1,13 @@
 /**
  * Misc. Utility functions for data populated across all areas of Dashboard
  */
- import { outdoorLogo, indoorLogo, emaneLogo, demoLogo, newLogo, mapLogo } from './dashLogos'
+import { outdoorLogo, indoorLogo, emaneLogo, demoLogo, newLogo, mapLogo , createdMapLogo} from './dashLogos'
 /**
  * Get time until or time since a certain date
  * @param {*} date - the date we are calculating from
  * @returns closest time until + interval increment
  */
- export function timeCalc(date) {
+export function timeCalc(date) {
 
     var seconds = Math.floor(
         (new Date() - date) / 1000
@@ -44,12 +44,12 @@
 
 export function getTestType(testType) {
     return testType === 'demo' ? { ...demoLogo }
-            : testType === 'outdoor' ? { ...outdoorLogo }
-                : testType === 'indoor' ? { ...indoorLogo }
-                    : testType === 'emane' ? { ...emaneLogo }
-                        : { ...newLogo }
+        : testType === 'outdoor' ? { ...outdoorLogo }
+            : testType === 'indoor' ? { ...indoorLogo }
+                : testType === 'emane' ? { ...emaneLogo }
+                    : { ...newLogo }
 }
 
-export function getMapLogo() {
-    return { ...mapLogo }
+export function getMapLogo(isNew = false) {
+    return isNew ? { ...mapLogo } : { ...createdMapLogo }
 }

@@ -57,7 +57,7 @@ const Map = (props) => {
 
     return (!resizing ?
         <MapsComponent
-            id="maps"
+            // id="maps"
             height={props.height}
             zoomSettings={{ zoomFactor: parseFloat(props.scene.zoomFactor) }}
             centerPosition={props.scene.mapCenter}

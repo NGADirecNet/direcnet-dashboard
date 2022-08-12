@@ -6,7 +6,8 @@ const testService = require('../testService');
 const tduResService = require('../tduResService');
 const calendarService = require('../calendarService');
 const atlassianservice = require('../atlassianservice');
-const weatherService = require('../weatherService')
+const weatherService = require('../weatherService');
+const sceneService = require('../sceneService')
 
 router.get('/heroes', (req, res) => {
   heroesService.get(req, res);
@@ -78,6 +79,22 @@ router.get('/bitbucket/commits/:branch', (req, res) => {
 
 router.get('/weather', (req, res) => {
   weatherService.get(req, res);
+})
+
+router.get('/map', (req, res) => {
+  sceneService.get(req, res);
+});
+
+router.put('/createMap', (req, res) => {
+  sceneService.create(req, res)
+})
+
+router.post('/updateMap', (req, res) => {
+  sceneService.update(req, res)
+})
+
+router.delete('/deleteMap/:id', (req, res) => {
+  sceneService.destroy(req, res)
 })
 
 module.exports = router;

@@ -3,30 +3,34 @@ import EditableTextField from './EditableTextField';
 import HoverableTestInfo from './HoverableTestInfo';
 
 // holds state for node hovering, renders event object from timeline to the DOM
-export default function MapLineInfo({ info, remove, scene, setScene, idx, pane }) {
+export default function MapLineInfo({ info, remove, scene, setScene, idx, pane, onChange }) {
 
-    const fieldChange = (event, field, coordIdx=null) => {
+    const fieldChange = (event, field, coordIdx = null) => {
         // to and from need lat or long specification
         let newInfo;
         if (field === 'to' || field === 'from') {
             newInfo = {
                 ...info,
-                [field]: [...info.from.map((coord, i) => (i === coordIdx ? parseFloat(event.value) : coord))]
+                [field]: [...info[field].map((coord, i) => (i === coordIdx ? parseFloat(event.value) : coord))]
             }
         }
         else {
             newInfo = {
                 ...info,
-                [field] : event.value
+                [field]: event.value
             }
         }
-        setScene([
-            ...scene.map(a => 
-                (a === pane ? { ...a, lines: [...a.lines.map((l, i) => 
+        setScene({
+            ...scene,
+            actions: [...scene.actions.map(a =>
+            (a === pane ? {
+                ...a, lines: [...a.lines.map((l, i) =>
                     (i === idx ? newInfo : l)
-                )]} : a)
-            )
-        ])
+                )]
+            } : a)
+            )]
+        })
+        onChange(event);
     }
 
     return (

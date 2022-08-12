@@ -6,6 +6,7 @@ import PaneEvent from './PaneEvent';
 import { newEvent, newNode, newPane } from '../data/contants';
 import AddButton from './AddButton';
 import RemoveButton from './RemoveButton';
+import { useStateContext } from '../contexts/ContextProvider';
 
 export function DropdownButton({ state, setState, alwaysHidden }) {
     const [hovering, setHovering] = useState(false);
@@ -41,10 +42,14 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
     const [showingAddNode, showAddNode] = useState(false);
     // show or hide the option to add a new event to timeline portion of the Pane
     const [showingAddEvent, showAddEvent] = useState(false);
+    // show or hide the option to show extra info about the scene/map
+    const [showScene, setShowScene] = useState(true);
     // display red border/shadow/button when hovering over RemoveButton
     const [removeHover, setRemoveHover] = useState(false);
     // represents either test data, or a new pane
     const [pane, setPane] = useState({})
+
+    const { sceneMaps } = useStateContext();
 
     useEffect(() => {
         if (scenario) {
@@ -235,6 +240,19 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
                         })}
                     </div>
                 </div>
+                {(pane.scene && sceneMaps) && (
+                    <div className='flex gap-3'>
+                        {<DropdownButton state={showScene} setState={setShowScene} />}
+                        <div className='w-full'>
+                            <p className='font-semibold text-`sm'>Scene:</p>
+                            {showScene && (
+                                <>
+                                    <p className='text-gray-400 text-sm'>{sceneMaps.find(s => s._id === pane.scene).name}</p>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                )}
                 {pane.attachments && (
                     <div className='flex gap-3'>
                         {<DropdownButton state={showAttach} setState={setShowAttach} />}
