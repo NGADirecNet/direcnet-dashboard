@@ -2,48 +2,64 @@ import React, { useState, useEffect } from 'react'
 import { MapsComponent, LayersDirective, LayerDirective, MarkersDirective, MarkerDirective, Inject, Marker, MapsTooltip, NavigationLine, NavigationLineDirective, NavigationLinesDirective } from '@syncfusion/ej2-react-maps'
 
 const Map = (props) => {
+    const [scene, setScene] = useState(null);
     const [map, setMap] = useState();
-    const [resizeOccur, setResizeOccur] = useState(null);
-    const [sceneChangeOccur, setSceneChangeOccur] = useState(null);
     const [resizing, setResizing] = useState(true);
-    console.log("props", props)
+
     useEffect(() => {
         setResizing(false)
     }, [map])
 
     useEffect(() => {
-        // ex. we showed more/less of details pane
-        if (props.onResize !== resizeOccur) {
-            console.log("setting true")
-            setResizing(true);
-            setResizeOccur(props.onResize);
-        }
-        // api call for scene has not finished yet
-        else if (props.scene === undefined || !props.scene.markers || !props.scene.lines) {
-            setResizing(true);
-            console.log("scene not ready yet")
-        }
-        // we changed the scene, need to re render Map
-        // else if (props.sceneChange !== sceneChangeOccur) {
-        //     setResizing(true);
-        //     // setSceneChangeOccur(props.sceneChange);
-        //     console.log("scene was updated");
-        // }
-        // all good, proceed with rendering map
-        else {
-            console.log("scene ready");
-            setSceneChangeOccur(props.scene)
-            setResizing(false);
-        } 
-    }, [props, resizeOccur, sceneChangeOccur])
+        if (props.scene)
+            setScene(props.scene);
+    }, [props.scene])
 
-    // useEffect(() )
+    useEffect(() => {
+        setResizing(true);
+    }, [scene])
+
+    useEffect(() => {
+        setResizing(false)
+    }, [props])
+
+    const getMarkers = () => {
+        // need at least 1 marker directive in there to make it not crash
+        return (
+            <MarkersDirective>
+                <MarkerDirective />
+                {(props.scene.markers && props.scene.markers.length) && props.scene.markers.map((node, idx) => 
+                    <MarkerDirective 
+                        key={idx} 
+                        {...node}
+                        animationDuration={0}
+                    />
+                )}
+            </MarkersDirective>
+        )
+    }
+
+    const getLines = () => {
+        // need at least 1 line directive in there to make it not crash
+        return (
+            <NavigationLinesDirective>
+                {/* <NavigationLineDirective /> */}
+                {(props.scene.lines && props.scene.lines.length) && props.scene.lines.map(line =>
+                    <NavigationLineDirective 
+                        {...line}
+                        latitude={[line.from[0], line.to[0]]} 
+                        longitude={[line.from[1], line.to[1]]}
+                    />
+                )}
+            </NavigationLinesDirective>
+        )
+    }
 
     return (!resizing ?
         <MapsComponent
             id="maps"
             height={props.height}
-            zoomSettings={{ zoomFactor: props.scene.zoomFactor }}
+            zoomSettings={{ zoomFactor: parseFloat(props.scene.zoomFactor) }}
             centerPosition={props.scene.mapCenter}
             ref={map => setMap(map)}
             resize={() => setResizing(true)}
@@ -51,13 +67,8 @@ const Map = (props) => {
             <Inject services={[Marker, MapsTooltip, NavigationLine]} />
             <LayersDirective>
                 <LayerDirective layerType='OSM'>
-                    {props.scene.markers.length && <MarkersDirective>
-                        {props.scene.markers.map((node, idx) => <MarkerDirective key={idx} {...node} />)}
-                        {/* {!move ? <MarkerDirective {...mobileNode} /> : <></>} */}
-                    </MarkersDirective>}
-                    {props.scene.lines.length && <NavigationLinesDirective>
-                        {props.scene.lines.map(line => <NavigationLineDirective {...line} latitude={[line.from[0], line.to[0]]} longitude={[line.from[1], line.to[1]]} />)}
-                    </NavigationLinesDirective>}
+                    {getMarkers()}
+                    {getLines()}
                 </LayerDirective>
             </LayersDirective>
         </MapsComponent> : <></>

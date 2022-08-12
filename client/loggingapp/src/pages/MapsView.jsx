@@ -11,13 +11,15 @@ const MapsView = (props) => {
     const params = useParams();
     const [saved, setSaved] = useState(false);
     const [scene, setScene] = useState([]);
-    const [selectedAction, setSelectedAction] = useState(null);
+    const [selectedAction, setSelectedAction] = useState(0);
 
     // default selected scenario to the first test in the timeline
     useEffect(() => {
         console.log("SCENE", scene)
+        console.log('sel ac', selectedAction)
+        console.log("sel", scene[selectedAction])
         if (selectedAction === null && scene.length)
-            setSelectedAction(scene[0])
+            setSelectedAction(0)
     }, [selectedAction, scene])
 
     // query the data connected to that scene
@@ -118,6 +120,20 @@ const MapsView = (props) => {
         console.log("saving map scene");
     }
 
+    const goToNextAction = () => {
+        // if we are at the last action, don't go anywhere
+        if (!(selectedAction === scene.length - 1))
+        // otherwise proceed to the next action using idx of current action
+            setSelectedAction(selectedAction + 1)
+    }
+
+    const goToPreviousAction = () => {
+        // if we are at the first action, don't go anywhere
+        if (!(selectedAction === 0))
+            // otherwise proceed to the previous action using idx of current action
+            setSelectedAction(selectedAction - 1)
+    }
+
     return (
         <div id="container" className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
             <div className='flex gap-4'>
@@ -131,7 +147,7 @@ const MapsView = (props) => {
                     {scene && scene.map((action, idx) =>
                         <MapsPane
                             action={action}
-                            isSelected={selectedAction === action}
+                            isSelected={selectedAction === scene.indexOf(action)}
                             setSelected={(a) => setSelectedAction(a)}
                             scene={scene}
                             setScene={setScene}
@@ -144,7 +160,9 @@ const MapsView = (props) => {
                         isNewPane
                         scene={scene}
                         setScene={setScene}
-                        setSelected={(a) => setSelectedAction(a)}
+                        setSelected={(a) => {
+                            console.log(a)
+                            setSelectedAction(a)}}
                         saved={saved}
                         setSaved={setSaved}
                         key={scene && scene.length}
@@ -155,13 +173,23 @@ const MapsView = (props) => {
                     <div className='h-96 my-2'>
                         {scene.length && 
                         <div className='border-1 rounded-2xl p-1'>
-                            {/* <Map height="380px" scene={scene[0]} /> */}
+                            {scene[selectedAction] && <Map height="380px" scene={scene[selectedAction]} />}
                         </div>}
                     </div>
                     <div className=' flex py-5 px-2 items-center justify-center gap-3'>
-                        <MdNavigateBefore />
-                        {selectedAction && selectedAction.header}
-                        <MdNavigateNext />
+                        <button
+                            className='border-1 p-2 rounded-lg'
+                            onClick={goToPreviousAction}
+                        >
+                            <MdNavigateBefore />
+                        </button>
+                        {scene[selectedAction] && scene[selectedAction].header}
+                        <button 
+                            className='border-1 p-2 rounded-lg'
+                            onClick={goToNextAction}
+                        >
+                            <MdNavigateNext />
+                        </button>
                     </div>
                 </div>
             </div>

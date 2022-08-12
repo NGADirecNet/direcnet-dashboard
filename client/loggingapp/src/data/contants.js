@@ -51,10 +51,45 @@ export const newMapsPane = {
     header: "New Action Header",
     subheader: "New Action Subheader",
     mapCenter: {
-        latitute: 0,
+        latitude: 0,
         longitude: 0
     },
     zoomFactor: 1,
     markers: [],
     lines: []
 };
+
+export const newMarker = {
+    visible: true,
+    dataSource: [
+        {
+            latitude: 0,
+            longitude: 0,
+            nodeInfo: {
+                name: 'New Marker'
+            }
+        }
+    ],
+    tooltipSettings: {
+        visible: true,
+        valuePath: 'nodeInfo.name'
+    },
+    width: '25',
+    height: '25',
+    shape: 'Diamond',
+    fill: 'white',
+    border: {
+        width: 2,
+        color: '#333'
+    }
+}
+
+export const newLine = {
+    name: 'New Line',
+    visible: true,
+    width: 100000,
+    color: 'green',
+    dashArray: 3,
+    from: [0, 0],
+    to: [0, 0]
+}
