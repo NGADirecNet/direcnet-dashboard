@@ -31,10 +31,10 @@ const Sidebar = () => {
           name: 'tests',
           icon: <VscRadioTower />,
         },
-        {
-          name: 'emane',
-          icon: <RiComputerLine />,
-        },
+        // {
+        //   name: 'emane',
+        //   icon: <RiComputerLine />,
+        // },
         {
           name: 'maps',
           icon: <FiMap />,

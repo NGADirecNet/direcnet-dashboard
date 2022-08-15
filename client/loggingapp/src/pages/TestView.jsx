@@ -9,12 +9,13 @@ import testApiService from '../testApi';
 import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import { createSpinner, showSpinner, hideSpinner } from '@syncfusion/ej2-react-popups';
 import { getTestType } from '../data/dataUtil';
+import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
 
 const TestView = (props) => {
     const params = useParams();
     const navigate = useNavigate();
     const { tests, setTests, currentDemo, sceneMaps } = useStateContext();
-    // The selected scenario that we model on the right hand map, first scenario by default
+    // should point to object id of scenario user has selected, first scenario by default
     const [selectedScenario, setSelectedScenario] = useState(null);
     // test suite local state object, gets copied to remote database when we click save
     const [test, setTest] = useState({});
@@ -32,23 +33,9 @@ const TestView = (props) => {
     const [currentAction, setCurrentAction] = useState(null)
 
     useEffect(() => {
-        if (scene && currentAction !== null) {
-            setTimeout(() => {
-                if (currentAction === scene.actions.length - 1)
-                    setCurrentAction(0)
-                else    
-                    setCurrentAction(currentAction + 1)
-            }, [2000])
-        }
-        else if (scene & currentAction === null) {
+        if (sceneMaps && selectedScenario) {
+            setCurrentScene(sceneMaps.find(s => s._id === selectedScenario))
             setCurrentAction(0)
-        }
-    }, [currentAction, scene])
-    useEffect(() => {
-        console.log("scene maps", sceneMaps)
-        if (sceneMaps) {
-            setCurrentScene(sceneMaps[0])
-            setCurrentAction(0) // this will break if there are no panes in that scene
         }
     }, [sceneMaps])
 
@@ -60,11 +47,41 @@ const TestView = (props) => {
 
     // default selected scenario to the first test in the timeline
     useEffect(() => {
-        console.log("test", test)
+        // console.log("test", test)
         setTestType(type)
-        if (selectedScenario === null && test.timeline)
-            setSelectedScenario(test.timeline[0].header)
-    }, [selectedScenario, test])
+        // if current sel scenario no longer exists, relocate to the first one again or set to null
+        if (test.timeline) {
+            let curr = test.timeline.find(t => t._id === selectedScenario)
+            if (!curr) curr = test.timeline.find(t => t.tempid === selectedScenario)
+            if (!curr) {
+                if (!test.timeline.length) setSelectedScenario(null)
+                else {
+                    if (test.timeline[0]._id)
+                        setSelectedScenario(test.timeline[0]._id)
+                    else setSelectedScenario(test.timeline[0].tempid)
+                }
+            }
+        }
+        if (selectedScenario === null && test.timeline && test.timeline.length) {
+            let id = test.timeline[0]._id;
+            if (!id) id = test.timeline[0].tempid
+            setSelectedScenario(id)
+        }
+        if (selectedScenario !== null && sceneMaps.length) {
+            let timelineObj = test.timeline.find(t => t._id === selectedScenario)
+            // timeline instance may just have been created... in this case we'll use temp id
+            if (!timelineObj) timelineObj = test.timeline.find(t => t.tempid === selectedScenario);
+            if (timelineObj && timelineObj.scene) {
+                setCurrentScene(sceneMaps.find(s => s._id === timelineObj.scene))
+                setCurrentAction(0)
+            }
+            else {
+                console.log("hits else")
+                setCurrentScene(null)
+                setCurrentAction(null)
+            }
+        }
+    }, [selectedScenario, test, sceneMaps])
 
     // query the data connected to that test
     useEffect(() => {
@@ -89,6 +106,20 @@ const TestView = (props) => {
         }
 
     }, [tests, params.id])
+
+    const goToNextAction = () => {
+        // if we are at the last action, don't go anywhere
+        if (!(currentAction === scene.actions.length - 1))
+            // otherwise proceed to the next action using idx of current action
+            setCurrentAction(currentAction + 1)
+    }
+
+    const goToPreviousAction = () => {
+        // if we are at the first action, don't go anywhere
+        if (!(currentAction === 0))
+            // otherwise proceed to the previous action using idx of current action
+            setCurrentAction(currentAction - 1)
+    }
 
     // types: sunny, partly cloudy, cloudy
     const getWeather = (weather) => {
@@ -166,13 +197,17 @@ const TestView = (props) => {
     // make api call creating / updating selected test
     const saveChanges = () => {
         if (props.new) {
+            console.log("creating")
             testApiService.create(test)
                 .then(res => {
                     if (res) {
+                        console.log("res")
                         setTests([
                             ...tests,
                             res
                         ])
+                        setSelectedScenario(null)
+                        console.log("navigating now")
                         navigate('/test/' + res._id)
                     }
 
@@ -264,8 +299,8 @@ const TestView = (props) => {
                     {timeline && timeline.map((scen, idx) =>
                         <TestPane
                             scenario={scen}
-                            isSelected={selectedScenario === scen.header}
-                            setSelected={(test) => setSelectedScenario(test.header)}
+                            isSelected={selectedScenario === scen._id}
+                            setSelected={(test) => setSelectedScenario(test._id)}
                             testSuite={test}
                             setTest={setTest}
                             saved={saved}
@@ -277,7 +312,7 @@ const TestView = (props) => {
                         isNewPane
                         testSuite={test}
                         setTest={setTest}
-                        setSelected={(test) => setSelectedScenario(test.header)}
+                        setSelected={(test) => setSelectedScenario(test._id)}
                         saved={saved}
                         setSaved={setSaved}
                         key={timeline && timeline.length}
@@ -293,14 +328,37 @@ const TestView = (props) => {
                         </div>
                     </div>
                     <div className='h-1/2 py-5 px-2'>
+                        <div className=' flex py-5 px-2 items-center justify-center gap-3'>
+                            <button
+                                className='border-1 p-2 rounded-lg'
+                                onClick={goToPreviousAction}
+                            >
+                                <MdNavigateBefore />
+                            </button>
+                            <button
+                                className='border-1 p-2 rounded-lg'
+                                onClick={goToNextAction}
+                            >
+                                <MdNavigateNext />
+                            </button>
+                        </div>
                         <div className='flex justify-between mb-5 pb-5 border-b-1'>
                             <p className='flex text-xl font-semibold items-center'>Current Scenario:</p>
                             <div className='border-1 rounded-lg p-2'>
                                 <DropDownListComponent
-                                    dataSource={timeline && timeline.map(s => s.header)}
-                                    placeholder={selectedScenario}
-                                    change={(e) => setSelectedScenario(e.itemData.value)}
-                                    value={selectedScenario}
+                                    dataSource={timeline}
+                                    fields={{ text: 'header' }}
+                                    placeholder={timeline && timeline.find(t => t._id === selectedScenario || t.tempid === selectedScenario)?.header}
+                                    change={(e) => {
+                                        if (e.itemData) {
+                                            if (e.itemData._id)
+                                                setSelectedScenario(e.itemData._id)
+                                            else
+                                                setSelectedScenario(e.itemData.tempid)
+                                        }
+                                        else setSelectedScenario(null)
+                                    }}
+                                    value={timeline && timeline.find(t => t._id === selectedScenario || t.tempid === selectedScenario)?.header}
                                 />
                             </div>
                         </div>

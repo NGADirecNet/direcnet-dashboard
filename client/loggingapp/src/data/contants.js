@@ -33,7 +33,12 @@ export const newTestSuite = {
     scenario: "New Test Suite",
     status: "in progress",
     time: [],
-    timeline: [newPane],
+    timeline: [
+        {
+            ...newPane,
+            tempid: 0
+        }
+    ],
     type: "new"
 };
 

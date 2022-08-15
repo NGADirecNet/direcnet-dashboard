@@ -48,7 +48,7 @@ const App = () => {
                             <Route path='/home' element={<Dashboard />} />
                             {/* Pages */}
                             <Route path='/tests' element={<TestingPage />} />
-                            <Route path='/emane' element={<EmanePage />} />
+                            {/* <Route path='/emane' element={<EmanePage />} /> */}
                             <Route path='/maps' element={<MapsPage />} />
                             <Route path='/maps/:id' element={<MapsView />} />
                             <Route path='/maps/new' element={<MapsView new />} />

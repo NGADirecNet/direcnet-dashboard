@@ -7,6 +7,7 @@ import { newEvent, newNode, newPane } from '../data/contants';
 import AddButton from './AddButton';
 import RemoveButton from './RemoveButton';
 import { useStateContext } from '../contexts/ContextProvider';
+import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 
 export function DropdownButton({ state, setState, alwaysHidden }) {
     const [hovering, setHovering] = useState(false);
@@ -64,7 +65,7 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
         // append copy string to header so we do not have duplicate panes selected
         var copyString = newPanes.length ? ` (${newPanes.length})` : ""
         // create our new pane
-        const addNewPane = {...newPane, header : newPane.header + copyString }
+        const addNewPane = { ...newPane, header: newPane.header + copyString, tempid: copyString }
         // add new pane to our test suite
         setTest({
             ...testSuite,
@@ -149,6 +150,14 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
         setSaved(false);
     }
 
+    const updateScene = (e) => {
+        setTest({
+            ...testSuite,
+            timeline: testSuite.timeline.map(t => (t === pane ? { ...t, scene: e.itemData['_id'] } : t))
+        })
+        setSaved(false);
+    }
+
     return isNewPane ? (
         <div
             className={`m-2 p-4 border-1 rounded-2xl ${isSelected ? 'shadow-lg cursor-default' : 'shadow-sm cursor-pointer'}`}
@@ -157,8 +166,8 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
         </div>
     ) : (
         <div
-            className={`m-2 p-4 border-1 rounded-2xl ${isSelected ? 'shadow-lg cursor-default' :  `cursor-pointer ${removeHover ? 'shadow-lg' : 'shadow-sm'}`} ${removeHover && 'border-red-600 shadow-lg shadow-red-200'}`}
-            // onClick={() => setSelected(pane)}
+            className={`m-2 p-4 border-1 rounded-2xl ${isSelected ? 'shadow-lg cursor-default' : `cursor-pointer ${removeHover ? 'shadow-lg' : 'shadow-sm'}`} ${removeHover && 'border-red-600 shadow-lg shadow-red-200'}`}
+        // onClick={() => setSelected(pane)}
         >
             <div className='flex gap-3'>
                 <DropdownButton state={showPane} setState={setShowPane} />
@@ -175,8 +184,8 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
                             onChange={(event) => fieldChange(event, "subheader")}
                         />
                     </div>
-                    <RemoveButton 
-                        onClick={removePane} 
+                    <RemoveButton
+                        onClick={removePane}
                         removeHover={removeHover}
                         setRemoveHover={setRemoveHover}
                     />
@@ -240,16 +249,25 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
                         })}
                     </div>
                 </div>
-                {(pane.scene && sceneMaps) && (
+                {(sceneMaps.length) && (
                     <div className='flex gap-3'>
                         {<DropdownButton state={showScene} setState={setShowScene} />}
                         <div className='w-full'>
                             <p className='font-semibold text-`sm'>Scene:</p>
-                            {showScene && (
+                            {/* {showScene && (
                                 <>
                                     <p className='text-gray-400 text-sm'>{sceneMaps.find(s => s._id === pane.scene).name}</p>
                                 </>
-                            )}
+                            )} */}
+                            <div className='border-1 rounded-lg p-2'>
+                                <DropDownListComponent
+                                    dataSource={sceneMaps}
+                                    fields={{ text: 'name' }}
+                                    placeholder={pane.scene ? sceneMaps.find(s => s._id === pane.scene).name : ''}
+                                    change={(e) => updateScene(e)}
+                                    value={pane.scene ? sceneMaps.find(s => s._id === pane.scene).name : ''}
+                                />
+                            </div>
                         </div>
                     </div>
                 )}
