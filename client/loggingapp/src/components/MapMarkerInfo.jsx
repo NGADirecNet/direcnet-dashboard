@@ -1,4 +1,5 @@
 import React from 'react'
+import Dropdown from './Dropdown';
 import EditableTextField from './EditableTextField';
 import HoverableTestInfo from './HoverableTestInfo';
 
@@ -6,6 +7,7 @@ import HoverableTestInfo from './HoverableTestInfo';
 export default function MapMarkerInfo({ info, remove, scene, setScene, idx, pane, onChange }) {
 
     const fieldChange = (event, field) => {
+        if (!event.value) return;
         // lat long or name need to be dataSource[0]
         let newInfo;
         if (field === 'name' || field === 'latitude' || field === 'longitude') {
@@ -15,19 +17,21 @@ export default function MapMarkerInfo({ info, remove, scene, setScene, idx, pane
                     dataSource: [...info.dataSource.map(d => { return { ...d, nodeInfo: { name: event.value } } })]
                 }
             }
-            else newInfo = {
-                ...info,
-                dataSource: [...info.dataSource.map(d => { return { ...d, [field]: parseFloat(event.value) } })]
+            else {
+                if (isNaN(event.value)) return;
+                newInfo = {
+                    ...info,
+                    dataSource: [...info.dataSource.map(d => { return { ...d, [field]: parseFloat(event.value) } })]
+                }
             }
         }
         // border needs to be border.width or border.color
         else if (field === 'borderwidth' || field === 'bordercolor') {
             if (field === 'borderwidth') {
+                if (isNaN(event.value)) return;
                 newInfo = { ...info, border: { ...info.border, width: event.value } }
             }
-            else {
-                newInfo = { ...info, border: { ...info.border, color: event.value } }
-            }
+            else newInfo = { ...info, border: { ...info.border, color: event.value } }
         }
         else {
             newInfo = { ...info, [field]: event.value }
@@ -52,7 +56,7 @@ export default function MapMarkerInfo({ info, remove, scene, setScene, idx, pane
         >
             <EditableTextField
                 placeholder={info.dataSource[0].nodeInfo.name}
-                className='p-1 font-semibold'
+                className='p-1 font-semibold w-1/2'
                 onChange={(e) => fieldChange(e, 'name')}
             />
             <div className='flex'>
@@ -61,7 +65,7 @@ export default function MapMarkerInfo({ info, remove, scene, setScene, idx, pane
                         <p className='font-semibold'>Latitude:</p>
                         <EditableTextField
                             placeholder={info.dataSource[0].latitude}
-                            className='p-1'
+                            className='p-1 w-1/2'
                             onChange={(e) => fieldChange(e, 'latitude')}
                         />
                     </div>
@@ -97,10 +101,10 @@ export default function MapMarkerInfo({ info, remove, scene, setScene, idx, pane
                 <div>
                     <div className='flex gap-1 items-center p-3'>
                         <p className='font-semibold'>Shape:</p>
-                        <EditableTextField
-                            placeholder={info.shape}
-                            className='p-1'
-                            onChange={(e) => fieldChange(e, 'shape')}
+                        <Dropdown
+                            data={['Diamond', 'Circle', 'Rectangle', 'Triangle', 'InvertedTriangle', 'Pentagon']}
+                            onChange={(e) => fieldChange({ value: e }, 'shape')}
+                            defaultValue={info.shape}
                         />
                     </div>
                     <div className='flex gap-1 items-center p-3'>

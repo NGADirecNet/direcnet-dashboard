@@ -6,37 +6,32 @@ import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
  * @param {*} props 
  * @returns mounted TextBoxComponent or mounted text component
  */
-const EditableTextField = ({ placeholder, className, onChange }) => {
+const EditableTextField = ({ placeholder, className, onChange, editWidth = '100%' }) => {
 
     const [editMode, setEditMode] = useState(false);
     const [inputObj, setInputObj] = useState();
-    const [display, setDisplay] = useState();
-
-    useEffect(() => {
-        setDisplay(placeholder)
-    }, [placeholder])
 
     const onTextChange = (event) => {
-        setDisplay(event.value)
         setEditMode(false)
-        onChange(event)
+        if (event.value) onChange(event)
     }
 
     return (
-        <div 
+        <div
             onClick={() => setEditMode(true)}
-            className={className}
+            className={className + ' hover:font-semibold border-1 border-white hover:border-gray-100 rounded-lg hover:cursor-text p-1'}
         >
             {editMode ?
                 (<TextBoxComponent
-                    change={onTextChange} 
+                    change={onTextChange}
                     ref={(text) => setInputObj(text)}
                     created={() => inputObj.focusIn(true)}
                     blur={() => setEditMode(false)}
-                    value={display}   
-                />) : 
+                    value={placeholder}
+                    width={editWidth}
+                />) :
                 (<p>
-                    {display}
+                    {placeholder}
                 </p>)
             }
         </div>

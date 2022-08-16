@@ -21,6 +21,17 @@ const atlassianApiService = {
                     reject(err);
                 });
         });
+    },
+
+    getProgress() {
+        return new Promise((resolve, reject) => {
+            fetch(`${baseAPI}/bitbucket/progress`)
+                .then(response => response.json())
+                .then(json => resolve(json))
+                .catch(err => {
+                    reject(err);
+                });
+        });
     }
 }
 

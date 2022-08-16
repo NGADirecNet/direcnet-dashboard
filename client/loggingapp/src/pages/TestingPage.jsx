@@ -69,12 +69,12 @@ const TestingPage = () => {
   const rowSel = () => {
     if (grid) {
       const data = grid.getSelectedRecords()
-      navigate('/test/' + data[0]._id)
+      navigate('/tests/' + data[0]._id)
     }
   }
 
   const newRow = () => {
-    navigate('/test/new')
+    navigate('/tests/new')
   }
 
   const contextMenuItems = [

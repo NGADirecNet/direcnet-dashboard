@@ -59,8 +59,8 @@ const App = () => {
                             <Route path='/charts' element={<Charts />} />
 
                             {/* Tests */}
-                            <Route path='/test/:id' element={<TestView />} />
-                            <Route path='/test/new' element={<TestView new />} />
+                            <Route path='/tests/:id' element={<TestView />} />
+                            <Route path='/tests/new' element={<TestView new />} />
 
                             {/* External */}
                             <Route path='/latest-stable' element={
@@ -82,7 +82,7 @@ const App = () => {
                 </div>
             </div>
             {/* Links */}
-            {tests.map(test => (<Link to={'/test/' + test._id} key={test._id} />))}
+            {tests.map(test => (<Link to={'/tests/' + test._id} key={test._id} />))}
         </BrowserRouter>
     )
 }

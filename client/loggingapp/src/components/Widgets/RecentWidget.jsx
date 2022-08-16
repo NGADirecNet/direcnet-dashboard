@@ -56,7 +56,7 @@ const RecentWidget = () => {
                                             backgroundColor: logo.IconBg,
                                         }}
                                         className="text-2xl rounded-lg p-4 hover:drop-shadow-xl"
-                                        onClick={() => navigate('/test/' + item._id)}
+                                        onClick={() => navigate('/tests/' + item._id)}
                                     >
                                         {logo.Icon}
                                     </button>
@@ -79,7 +79,7 @@ const RecentWidget = () => {
                         bgColor={currentColor}
                         text="Add"
                         borderRadius="10px"
-                        onClick={() => navigate('/test/new')}
+                        onClick={() => navigate('/tests/new')}
                     />
                 </div>
 

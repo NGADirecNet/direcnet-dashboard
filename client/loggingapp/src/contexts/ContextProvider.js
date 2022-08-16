@@ -27,6 +27,7 @@ export const ContextProvider = ({ children }) => {
     const [cal, setCal] = useState([])
     const [branches, setBranches] = useState([]);
     const [sceneMaps, setSceneMaps] = useState([]);
+    const [progress, setProgress] = useState([]);
 
     useEffect(() => {
         testApiService.get()
@@ -55,6 +56,12 @@ export const ContextProvider = ({ children }) => {
                     setSceneMaps(json);
                 }
             })
+        atlassianApiService.getProgress()
+            .then(json => {
+                if (json) {
+                    setProgress(json.commits)
+                }
+            })
     }, [])
 
     // useEffect(() => {
@@ -68,6 +75,10 @@ export const ContextProvider = ({ children }) => {
     // useEffect(() => {
     //     console.log("current demo updated - ", currentDemo)
     // }, [currentDemo])
+
+    // useEffect(() => {
+    //     console.log("PROGRESS updated", progress)
+    // }, [progress])
 
     return (
         <StateContext.Provider
@@ -86,7 +97,9 @@ export const ContextProvider = ({ children }) => {
                 branches,
                 setBranches,
                 sceneMaps,
-                setSceneMaps
+                setSceneMaps,
+                progress,
+                setProgress
             }}
         >
             {children}

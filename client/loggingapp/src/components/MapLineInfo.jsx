@@ -6,15 +6,24 @@ import HoverableTestInfo from './HoverableTestInfo';
 export default function MapLineInfo({ info, remove, scene, setScene, idx, pane, onChange }) {
 
     const fieldChange = (event, field, coordIdx = null) => {
+        if (!event.value) return;
         // to and from need lat or long specification
         let newInfo;
         if (field === 'to' || field === 'from') {
+            if (isNaN(event.value)) return;
             newInfo = {
                 ...info,
                 [field]: [...info[field].map((coord, i) => (i === coordIdx ? parseFloat(event.value) : coord))]
             }
         }
+        else if (field === 'color') {
+            newInfo = {
+                ...info,
+                [field]: event.value
+            }
+        }
         else {
+            if (isNaN(event.value)) return;
             newInfo = {
                 ...info,
                 [field]: event.value

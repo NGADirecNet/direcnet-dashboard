@@ -77,6 +77,10 @@ router.get('/bitbucket/commits/:branch', (req, res) => {
   atlassianservice.getCommits(req, res);
 })
 
+router.get('/bitbucket/progress', (req, res) => {
+  atlassianservice.getProgress(req, res);
+})
+
 router.get('/weather', (req, res) => {
   weatherService.get(req, res);
 })

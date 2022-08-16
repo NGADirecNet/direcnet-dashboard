@@ -1,15 +1,11 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Compass, HourlyChart, Humidity, Page, PrecipitaionBar, UVGauge } from '../components'
-import { BsSun } from 'react-icons/bs'
 import { days } from '../data/contants'
 import { apiIcon } from '../data/weatherUtil'
 import { useWeatherContext } from '../contexts/WeatherContextProvider'
 import { HiOutlineLocationMarker } from 'react-icons/hi'
-import { Inject, CircularGaugeComponent, AxesDirective, AxisDirective, PointersDirective, PointerDirective, Gradient, RangesDirective, RangeDirective } from '@syncfusion/ej2-react-circulargauge';
 import { WiSunrise, WiSunset } from 'react-icons/wi'
 import { useStateContext } from '../contexts/ContextProvider'
-
-
 
 const Weather = () => {
     const { weatherData, current, hourly, daily } = useWeatherContext();

@@ -76,7 +76,6 @@ const TestView = (props) => {
                 setCurrentAction(0)
             }
             else {
-                console.log("hits else")
                 setCurrentScene(null)
                 setCurrentAction(null)
             }
@@ -197,18 +196,15 @@ const TestView = (props) => {
     // make api call creating / updating selected test
     const saveChanges = () => {
         if (props.new) {
-            console.log("creating")
             testApiService.create(test)
                 .then(res => {
                     if (res) {
-                        console.log("res")
                         setTests([
                             ...tests,
                             res
                         ])
                         setSelectedScenario(null)
-                        console.log("navigating now")
-                        navigate('/test/' + res._id)
+                        navigate('/tests/' + res._id)
                     }
 
                 })
@@ -226,57 +222,19 @@ const TestView = (props) => {
         setSaved(true);
     }
 
-    const addNote = () => {
+    const updateTest = (event, update, idx=null, field=null) => {
+        let newTestObj;
+        if (update === 'addTime') newTestObj = { time: [...time, newTime] };
+        else if (update === 'removeTime') newTestObj = { time: test.time.filter((t, i) => i !== idx) };
+        else if (update === 'addNote') newTestObj = { notes: [...test.notes, newNote] };
+        else if (update === 'removeNote') newTestObj = { notes: test.notes.filter((n, i) => i !== idx) };
+        else if (update === 'updateTime') newTestObj = { time: test.time.map((t, i) => i === idx ? { ...t, [field]: event.value } : t) };
+        else if (update === 'updateNote') newTestObj = { notes: test.notes.map((n, i) => (i === idx ? event.value : n)) }
         setTest({
             ...test,
-            notes: [...test.notes, newNote]
+            ...newTestObj
         })
         setSaved(false);
-    }
-
-    const noteChange = (event, idx) => {
-        setTest({
-            ...test,
-            notes: test.notes.map((n, i) => (i === idx ? event.value : n))
-        })
-        setSaved(false);
-    }
-
-    const removeNote = (idx) => {
-        setTest({
-            ...test,
-            notes: test.notes.filter((n, i) => i !== idx)
-        })
-        setSaved(false);
-    }
-
-    const addTime = () => {
-        setTest({
-            ...test,
-            time: [...time, newTime]
-        });
-        setSaved(false);
-    }
-
-    const updateTime = (event, idx, field) => {
-        if (field === 'name' || field === 'time') {
-            setTest({
-                ...test,
-                time: test.time.map((t, i) => i === idx ? { ...t, [field]: event.value } : t)
-            })
-            setSaved(false);
-        }
-        else {
-            // we have a problem
-        }
-    }
-
-    const removeTime = (idx) => {
-        setTest({
-            ...test,
-            time: test.time.filter((t, i) => i !== idx)
-        })
-        setSaved(false)
     }
 
     return (
@@ -363,14 +321,14 @@ const TestView = (props) => {
                             </div>
                         </div>
                         <p className='text-xl font-semibold mb-1'>Important Times</p>
-                        {(!time || !time.length) && <AddButton onClick={addTime} />}
+                        {(!time || !time.length) && <AddButton onClick={(e) => updateTest(e, 'addTime')} />}
                         {time && time.map((t, idx) => {
                             const timeComp = (
                                 <TestTime
                                     time={t}
-                                    nameChange={(e) => updateTime(e, idx, "name")}
-                                    timeChange={(e) => updateTime(e, idx, "time")}
-                                    remove={() => removeTime(idx)}
+                                    nameChange={(e) => updateTest(e, 'updateTime', idx, "name")}
+                                    timeChange={(e) => updateTest(e, 'updateTime', idx, "time")}
+                                    remove={(e) => updateTest(e, 'removeTime', idx)}
                                 />);
                             if (idx === time.length - 1)
                                 return (
@@ -379,7 +337,7 @@ const TestView = (props) => {
                                         onMouseLeave={() => showAddTime(false)}
                                     >
                                         {timeComp}
-                                        {showingAddTime && <AddButton onClick={addTime} />}
+                                        {showingAddTime && <AddButton onClick={(e) => updateTest(e, 'addTime')} />}
                                     </div>
                                 )
                             else return (timeComp)
@@ -388,9 +346,9 @@ const TestView = (props) => {
                         {weather && getWeather(weather)}
                         <div className='py-5 border-y-1'>
                             <p className='text-xl font-semibold mb-5'>Notes:</p>
-                            {(!notes || !notes.length) && <AddButton onClick={addNote} />}
+                            {(!notes || !notes.length) && <AddButton onClick={(e) => updateTest(e, 'addNote')} />}
                             {notes && notes.map((note, idx) => {
-                                const noteComp = (<TestNote note={note} onChange={(e) => noteChange(e, idx)} remove={() => removeNote(idx)} />);
+                                const noteComp = (<TestNote note={note} onChange={(e) => updateTest(e, 'updateNote', idx)} remove={(e) => updateTest(e, 'removeNote', idx)} />);
                                 if (idx === notes.length - 1)
                                     return (
                                         <div
@@ -398,7 +356,7 @@ const TestView = (props) => {
                                             onMouseLeave={() => showAddNote(false)}
                                         >
                                             {noteComp}
-                                            {showingAddNote && <AddButton onClick={addNote} />}
+                                            {showingAddNote && <AddButton onClick={(e) => updateTest(e, 'addNote')} />}
                                         </div>
                                     )
                                 else return (noteComp)

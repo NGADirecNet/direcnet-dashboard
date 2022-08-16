@@ -13,7 +13,7 @@ const Dashboard = () => {
       data: {
         icon: <GoEye />,
         ...getTime(new Date(currentDemo.date).toLocaleDateString('en-US'), 'Demo'),
-        link: '/test/' + currentDemo._id
+        link: '/tests/' + currentDemo._id
       },
     },
   ];

@@ -1,34 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { RiArrowDropDownLine, RiArrowDropRightLine } from 'react-icons/ri';
 import EditableTextField from './EditableTextField';
-import PaneNode from './PaneNode';
-import PaneEvent from './PaneEvent';
-import { newEvent, newLine, newMapsPane, newMarker, newNode, newPane } from '../data/contants';
+import { newLine, newMapsPane, newMarker } from '../data/contants';
 import AddButton from './AddButton';
 import RemoveButton from './RemoveButton';
 import MapMarkerInfo from './MapMarkerInfo';
 import MapLineInfo from './MapLineInfo';
-
-export function DropdownButton({ state, setState, alwaysHidden }) {
-    const [hovering, setHovering] = useState(false);
-    const className = alwaysHidden ?
-        "text-xl font-semibold text-white rounded-lg cursor-default" :
-        hovering ?
-            "text-xl font-semibold text-gray-500 rounded-lg" :
-            "text-xl font-semibold text-white rounded-lg";
-
-    return (
-        <button
-            type="button"
-            className={className}
-            onClick={() => setState(prev => !prev)}
-            onMouseEnter={() => setHovering(true)}
-            onMouseLeave={() => setHovering(false)}
-        >
-            {state ? <RiArrowDropDownLine /> : <RiArrowDropRightLine />}
-        </button>
-    )
-}
+import DropdownButton from './DropdownButton'
+import { IoIosMore } from 'react-icons/io';
+import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 
 export default function MapsPane({ action, isSelected, setSelected, isNewPane = false, scene, setScene, saved, setSaved }) {
     // by default keep the entire pane rendered until user would like to hide it
@@ -42,6 +22,8 @@ export default function MapsPane({ action, isSelected, setSelected, isNewPane = 
     const [showLatLongZoom, setShowLatLongZoom] = useState(true);
     const [showingAddMarker, showAddMarker] = useState(false);
     const [showingAddLine, showAddLine] = useState(false);
+    const [drop, setDrop] = useState(false);
+
     useEffect(() => {
         if (action) {
             setPane(action)
@@ -76,9 +58,12 @@ export default function MapsPane({ action, isSelected, setSelected, isNewPane = 
     }
 
     // update state when an editable field gets changed by the user
-    const fieldChange = (event, field, idx = null, descriptor = null) => {
+    const fieldChange = (event, field) => {
+        if (!event.value) return;
         // events or setups require an idx and descriptor of which key we want
+        if (field === 'zoomFactor' && isNaN(event.value)) return;
         if (field === 'latitude' || field === 'longitude') {
+            if (isNaN(event.value)) return;
             setScene({
                 ...scene,
                 actions: [...scene.actions.map(a => (a === pane ? { ...a, mapCenter: { ...a.mapCenter, [field]: parseFloat(event.value) } } : a))]
@@ -94,35 +79,34 @@ export default function MapsPane({ action, isSelected, setSelected, isNewPane = 
         setSaved(false);
     }
 
-    const addMarker = () => {
+    const updateScene = (update, idx = null) => {
         setScene({
             ...scene,
-            actions: [...scene.actions.map(a => (a === pane ? { ...a, markers: [...a.markers, newMarker] } : a))]
+            actions: [...scene.actions.map(a => {
+                let newPaneObj = {};
+                if (update === 'removeLine') newPaneObj = { ...a, lines: [...a.lines.filter((l, i) => i !== idx)] }
+                else if (update === 'addLine') newPaneObj = { ...a, lines: [...a.lines, newLine] }
+                else if (update === 'addMarker') newPaneObj = { ...a, markers: [...a.markers, newMarker] }
+                else if (update === 'removeMarker') newPaneObj = { ...a, markers: [...a.markers.filter((m, i) => i !== idx)] }
+                return (a === pane ? newPaneObj : a)
+            })]
         });
         setSaved(false);
     }
 
-    const removeMarker = (idx) => {
+    const duplicatePane = () => {
         setScene({
             ...scene,
-            actions: [...scene.actions.map(a => (a === pane ? { ...a, markers: [...a.markers.filter((m, i) => i !== idx)] } : a))]
-        });
-        setSaved(false);
+            actions: [...scene.actions, { ...pane }]
+        })
     }
 
-    const addLine = () => {
-        setScene({
-            ...scene,
-            actions: [...scene.actions.map(a => (a === pane ? { ...a, lines: [...a.lines, newLine] } : a))]
-        });
-        setSaved(false);
-    }
-
-    const removeLine = (idx) => {
-        setScene({
-            ...scene,
-            actions: [...scene.actions.map(a => (a === pane ? { ...a, lines: [...a.lines.filter((l, i) => i !== idx)] } : a))]
-        });
+    const dropdownSelect = (e) => {
+        if (e.itemData) {
+            if (e.itemData.value === 'Delete') removePane()
+            else duplicatePane()
+        }
+        drop.clear()
         setSaved(false);
     }
 
@@ -154,102 +138,113 @@ export default function MapsPane({ action, isSelected, setSelected, isNewPane = 
                             onChange={(e) => fieldChange(e, 'subheader')}
                         />
                     </div>
-                    <RemoveButton
-                        onClick={removePane}
-                        removeHover={removeHover}
-                        setRemoveHover={setRemoveHover}
-                    />
+                    <div className='text-gray-400 p-3 pr-6'>
+                        <DropDownListComponent
+                            cssClass={'inlinecss'} popupHeight="200px" width="0px" popupWidth="140px"
+                            dataSource={['Duplicate', 'Delete']}
+                            ref={(drop) => setDrop(drop)}
+                            change={(e) => dropdownSelect(e)}
+                        />
+                    </div>
                 </div>
 
             </div>
-            <div className='flex py-3 gap-3'>
-                <DropdownButton state={showLatLongZoom} setState={setShowLatLongZoom} />
-                <div>
-                    <div className='flex gap-1'>
-                        <p className='font-semibold'>Latitude: </p>
-                        <EditableTextField
-                            placeholder={pane.mapCenter ? pane.mapCenter.latitude : 'Lat'}
-                            onChange={(e) => fieldChange(e, 'latitude')}
-                        />
-                    </div>
-                    <div className='flex gap-1'>
-                        <p className='font-semibold'>Longitude: </p>
-                        <EditableTextField
-                            placeholder={pane.mapCenter ? pane.mapCenter.longitude : 'Long'}
-                            onChange={(e) => fieldChange(e, 'longitude')}
-                        />
-                    </div>
-                    <div className='flex gap-1'>
-                        <p className='font-semibold'>Zoom Factor: </p>
-                        <EditableTextField
-                            placeholder={pane.zoomFactor}
-                            onChange={(e) => fieldChange(e, 'zoomFactor')}
-                        />
+            {showPane && (<>
+                <div className='flex py-3 gap-3'>
+                    <DropdownButton state={showLatLongZoom} setState={setShowLatLongZoom} />
+                    {showLatLongZoom ? (<>
+                        <div>
+                            <div className='flex gap-1'>
+                                <p className='font-semibold'>Latitude: </p>
+                                <EditableTextField
+                                    placeholder={pane.mapCenter ? pane.mapCenter.latitude : 'Lat'}
+                                    onChange={(e) => fieldChange(e, 'latitude')}
+                                />
+                            </div>
+                            <div className='flex gap-1'>
+                                <p className='font-semibold'>Longitude: </p>
+                                <EditableTextField
+                                    placeholder={pane.mapCenter ? pane.mapCenter.longitude : 'Long'}
+                                    onChange={(e) => fieldChange(e, 'longitude')}
+                                />
+                            </div>
+                            <div className='flex gap-1'>
+                                <p className='font-semibold'>Zoom Factor: </p>
+                                <EditableTextField
+                                    placeholder={pane.zoomFactor}
+                                    onChange={(e) => fieldChange(e, 'zoomFactor')}
+                                />
+                            </div>
+                        </div>
+                    </>) : (<p className='text-sm text-gray-400 font-semibold'>Lat, Long, Map Zoom Factor...</p>)}
+                </div>
+                <div className='flex gap-3'>
+                    <DropdownButton state={showMarkers} setState={setShowMarkers} />
+                    <div className='w-full py-3'>
+                        {showMarkers ? (<>
+                            <p className='font-semibold'>Markers:</p>
+                            {(!pane.markers || !pane.markers.length) && <AddButton onClick={() => updateScene('addMarker')} />}
+                            {pane.markers && pane.markers.map((marker, idx) => {
+                                const markComp = (
+                                    <MapMarkerInfo
+                                        info={marker}
+                                        remove={() => updateScene('removeMarker', idx)}
+                                        scene={scene}
+                                        setScene={setScene}
+                                        idx={idx}
+                                        pane={pane}
+                                        onChange={(e => setSaved(false))}
+                                    />
+                                )
+                                if (idx === pane.markers.length - 1)
+                                    return (
+                                        <div
+                                            onMouseEnter={() => showAddMarker(true)}
+                                            onMouseLeave={() => showAddMarker(false)}
+                                        >
+                                            {markComp}
+                                            {showingAddMarker && <AddButton onClick={() => updateScene('addMarker')} />}
+                                        </div>
+                                    )
+                                else return (markComp)
+                            })}
+                        </>) : (<p className='text-sm text-gray-400 font-semibold'>Markers: {pane.markers && pane.markers.map(m => m.dataSource[0].nodeInfo.name + '... ')}</p>)}
                     </div>
                 </div>
-            </div>
-            <div className='flex gap-3'>
-                <DropdownButton state={showMarkers} setState={setShowMarkers} />
-                <div className='w-full'>
-                    <p className='font-semibold'>Markers:</p>
-                    {(!pane.markers || !pane.markers.length) && <AddButton onClick={addMarker} />}
-                    {pane.markers && pane.markers.map((marker, idx) => {
-                        const markComp = (
-                            <MapMarkerInfo
-                                info={marker}
-                                remove={() => removeMarker(idx)}
-                                scene={scene}
-                                setScene={setScene}
-                                idx={idx}
-                                pane={pane}
-                                onChange={(e => setSaved(false))}
-                            />
-                        )
-                        if (idx === pane.markers.length - 1)
-                            return (
-                                <div
-                                    onMouseEnter={() => showAddMarker(true)}
-                                    onMouseLeave={() => showAddMarker(false)}
-                                >
-                                    {markComp}
-                                    {showingAddMarker && <AddButton onClick={addMarker} />}
-                                </div>
-                            )
-                        else return (markComp)
-                    })}
+                <div className='flex gap-3'>
+                    <DropdownButton state={showLines} setState={setShowLines} />
+                    <div className='w-full py-3'>
+                        {showLines ? (<>
+                            <p className='font-semibold'>Lines:</p>
+                            {(!pane.lines || !pane.lines.length) && <AddButton onClick={() => updateScene('addLine')} />}
+                            {pane.lines && pane.lines.map((line, idx) => {
+                                const lineComp = (
+                                    <MapLineInfo
+                                        info={line}
+                                        remove={() => updateScene('removeLine', idx)}
+                                        scene={scene}
+                                        setScene={setScene}
+                                        idx={idx}
+                                        pane={pane}
+                                        onChange={(e => setSaved(false))}
+                                    />
+                                )
+                                if (idx === pane.lines.length - 1)
+                                    return (
+                                        <div
+                                            onMouseEnter={() => showAddLine(true)}
+                                            onMouseLeave={() => showAddLine(false)}
+                                        >
+                                            {lineComp}
+                                            {showingAddLine && <AddButton onClick={() => updateScene('addLine')} />}
+                                        </div>
+                                    )
+                                else return (lineComp)
+                            })}
+                        </>) : (<p className='text-sm text-gray-400 font-semibold'>Lines: {pane.lines && pane.lines.map(l => l.name + '... ')}</p>)}
+                    </div>
                 </div>
-            </div>
-            <div className='flex gap-3'>
-                <DropdownButton state={showLines} setState={setShowLines} />
-                <div className='w-full'>
-                    <p className='font-semibold'>Lines:</p>
-                    {(!pane.lines || !pane.lines.length) && <AddButton onClick={addLine} />}
-                    {pane.lines && pane.lines.map((line, idx) => {
-                        const lineComp = (
-                            <MapLineInfo
-                                info={line}
-                                remove={() => removeLine(idx)}
-                                scene={scene}
-                                setScene={setScene}
-                                idx={idx}
-                                pane={pane}
-                                onChange={(e => setSaved(false))}
-                            />
-                        )
-                        if (idx === pane.lines.length - 1)
-                            return (
-                                <div
-                                    onMouseEnter={() => showAddLine(true)}
-                                    onMouseLeave={() => showAddLine(false)}
-                                >
-                                    {lineComp}
-                                    {showingAddLine && <AddButton onClick={addLine} />}
-                                </div>
-                            )
-                        else return (lineComp)
-                    })}
-                </div>
-            </div>
+            </>)}
         </div>
     )
 }

@@ -48,11 +48,7 @@ const MapsView = (props) => {
         const logo = getMapLogo(props.new);
         return (
             <>
-                <a
-                    href={''}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
+                <a>
                     <button
                         type="button"
                         style={{
@@ -66,14 +62,7 @@ const MapsView = (props) => {
                 </a>
                 <TestHeader
                     category={logo.Type}
-                    // categoryChange={(val) => {
-                    //     setTestType(val)
-                    //     setTest({
-                    //         ...test,
-                    //         type: val
-                    //     })
-                    //     setSaved(false)
-                    // }}
+                    disableChange
                     hasDetails={false}
                     title={scene.name}
                     titleChange={(val) => {

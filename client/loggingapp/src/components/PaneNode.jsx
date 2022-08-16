@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import EditableTextField from './EditableTextField';
 import RemoveButton from './RemoveButton';
 
@@ -9,7 +9,7 @@ export default function PaneNode({ node, onChange, showDesc = false, descOnChang
 
     return (
         <div
-            className={`w-1/3 ${hover && 'border-1 rounded-lg'} ${removeHover && 'border-red-600'}`}
+            className={`w-1/3 border-1 rounded-lg ${removeHover ? 'border-red-600' : hover ? 'border-gray-100' : 'border-white'}`}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
         >
@@ -20,7 +20,8 @@ export default function PaneNode({ node, onChange, showDesc = false, descOnChang
                     onChange={onChange}
                 />
                 {hover &&
-                    <RemoveButton 
+                    <RemoveButton
+                        visible={hover} 
                         onClick={removeNode} 
                         removeHover={removeHover}
                         setRemoveHover={setRemoveHover}

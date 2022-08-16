@@ -20,17 +20,23 @@ const Map = (props) => {
     }, [scene])
 
     useEffect(() => {
-        setResizing(false)
-    }, [props])
+        setResizing(true)
+        setMap(null)
+    }, [props.onResize])
+    
+    useEffect(() => {
+        setResizing(false);
+    }, [])
+
 
     const getMarkers = () => {
         // need at least 1 marker directive in there to make it not crash
         return (
             <MarkersDirective>
                 <MarkerDirective />
-                {(props.scene.markers && props.scene.markers.length) && props.scene.markers.map((node, idx) => 
-                    <MarkerDirective 
-                        key={idx} 
+                {(props.scene.markers && props.scene.markers.length) && props.scene.markers.map((node, idx) =>
+                    <MarkerDirective
+                        key={idx}
                         {...node}
                         animationDuration={0}
                     />
@@ -45,9 +51,9 @@ const Map = (props) => {
             <NavigationLinesDirective>
                 {/* <NavigationLineDirective /> */}
                 {(props.scene.lines && props.scene.lines.length) && props.scene.lines.map(line =>
-                    <NavigationLineDirective 
+                    <NavigationLineDirective
                         {...line}
-                        latitude={[line.from[0], line.to[0]]} 
+                        latitude={[line.from[0], line.to[0]]}
                         longitude={[line.from[1], line.to[1]]}
                     />
                 )}

@@ -4,6 +4,14 @@ import { Button, Page as PageWrap } from '../components'
 import { useStateContext } from '../contexts/ContextProvider'
 import { GridComponent, ColumnsDirective, ColumnDirective, Resize, Sort, ContextMenu, Filter, Page, ExcelExport, PdfExport, Edit, Inject } from '@syncfusion/ej2-react-grids';
 
+const testsGrid = [
+    {
+      field: 'name',
+      headerText: 'Name',
+      width: '150',
+      textAlign: 'Center',
+    },
+  ];
 
 const MapsPage = () => {
     const { currentColor, sceneMaps } = useStateContext();
@@ -46,10 +54,10 @@ const MapsPage = () => {
                 //     }]
                 // }}
             >
-                {/* <ColumnsDirective> */}
+                <ColumnsDirective>
                     {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-                    {/* {testsGrid.map((item, index) => <ColumnDirective key={index} {...item} />)} */}
-                {/* </ColumnsDirective> */}
+                    {testsGrid.map((item, index) => <ColumnDirective key={index} {...item} />)}
+                </ColumnsDirective>
                 <Inject services={[Resize, Sort, ContextMenu, Filter, Page, ExcelExport, Edit, PdfExport]} />
             </GridComponent>
         </PageWrap>

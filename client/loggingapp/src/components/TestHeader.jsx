@@ -9,10 +9,10 @@ const dropdownItems = [
     { "Name": "Outdoor Test", "value": "outdoor" },
     { "Name": "Indoor Test", "value": "indoor" },
     { "Name": "EMANE", "value": "emane" },
-    { "Name": "DEMO", "value": "demo"}
+    { "Name": "DEMO", "value": "demo" }
 ]
 
-const TestHeader = ({ category, categoryChange, title, titleChange, showMore, setShowMore, saved, saveChanges, hasDetails=true }) => {
+const TestHeader = ({ category, categoryChange, title, titleChange, showMore, setShowMore, saved, saveChanges, hasDetails = true, disableChange = false }) => {
     const [dropdown, setDropdown] = useState()
     const [editCategory, setEditCategory] = useState(false);
     const { currentColor } = useStateContext();
@@ -28,19 +28,22 @@ const TestHeader = ({ category, categoryChange, title, titleChange, showMore, se
         <div className='flex w-full justify-between'>
             <div className=" mb-10">
                 <div onClick={showDrop}>
-                    {editCategory ?
-                        (<DropDownListComponent
-                            popupWidth="200px"
-                            dataSource={dropdownItems}
-                            fields={{ text: 'Name' }}
-                            placeholder={category}
-                            change={onCatChange}
-                            ref={(drop) => setDropdown(drop)}
-                            created={() => dropdown.focusIn(true)}
-                            blur={hideDrop}
-                        />) :
-                        (<p className="text-lg text-gray-400">{category}</p>)
+                    {disableChange ? (<p className='text-lg text-gray-400'>{category}</p>) :
+                        (editCategory ?
+                            (<DropDownListComponent
+                                popupWidth="200px"
+                                dataSource={dropdownItems}
+                                fields={{ text: 'Name' }}
+                                placeholder={category}
+                                change={onCatChange}
+                                ref={(drop) => setDropdown(drop)}
+                                created={() => dropdown.focusIn(true)}
+                                blur={hideDrop}
+                            />) :
+                            (<p className="text-lg text-gray-400">{category}</p>)
+                        )
                     }
+
                 </div>
                 <EditableTextField
                     placeholder={title}
@@ -51,18 +54,18 @@ const TestHeader = ({ category, categoryChange, title, titleChange, showMore, se
             </div>
             <div className='space-y-1'>
                 {hasDetails &&
+                    <div
+                        className='h-10 p-2 flex justify-center items-center gap-5 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray cursor-pointer border-1'
+                        onClick={() => setShowMore(prev => !prev)}
+                    >
+                        {showMore ? <RiArrowDropDownLine /> : <RiArrowDropRightLine />}
+                        <span className='capitalize'>
+                            {`Show ${showMore ? 'Less' : 'More'}`}
+                        </span>
+                    </div>}
                 <div
-                    className='h-10 p-2 flex justify-center items-center gap-5 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray cursor-pointer border-1'
-                    onClick={() => setShowMore(prev => !prev)}
-                >
-                    {showMore ? <RiArrowDropDownLine /> : <RiArrowDropRightLine />}
-                    <span className='capitalize'>
-                        {`Show ${showMore ? 'Less' : 'More'}`}
-                    </span>
-                </div>}
-                <div
-                    className={saved ? 
-                        'h-10 p-2 flex justify-center items-center gap-5 rounded-lg text-md text-gray-700 dark:text-gray-200 cursor-pointer border-1' : 
+                    className={saved ?
+                        'h-10 p-2 flex justify-center items-center gap-5 rounded-lg text-md text-gray-700 dark:text-gray-200 cursor-pointer border-1' :
                         'h-10 p-2 flex justify-center items-center gap-5 rounded-lg  text-white  text-md cursor-pointer'}
                     style={{ backgroundColor: saved ? '' : currentColor }}
                     onClick={saveChanges}

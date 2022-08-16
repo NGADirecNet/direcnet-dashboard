@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { RiArrowDropDownLine, RiArrowDropRightLine } from 'react-icons/ri';
 import EditableTextField from './EditableTextField';
 import PaneNode from './PaneNode';
 import PaneEvent from './PaneEvent';
@@ -8,27 +7,7 @@ import AddButton from './AddButton';
 import RemoveButton from './RemoveButton';
 import { useStateContext } from '../contexts/ContextProvider';
 import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
-
-export function DropdownButton({ state, setState, alwaysHidden }) {
-    const [hovering, setHovering] = useState(false);
-    const className = alwaysHidden ?
-        "text-xl font-semibold text-white rounded-lg cursor-default" :
-        hovering ?
-            "text-xl font-semibold text-gray-500 rounded-lg" :
-            "text-xl font-semibold text-white rounded-lg";
-
-    return (
-        <button
-            type="button"
-            className={className}
-            onClick={() => setState(prev => !prev)}
-            onMouseEnter={() => setHovering(true)}
-            onMouseLeave={() => setHovering(false)}
-        >
-            {state ? <RiArrowDropDownLine /> : <RiArrowDropRightLine />}
-        </button>
-    )
-}
+import DropdownButton from './DropdownButton';
 
 export default function TestPane({ scenario, isSelected, setSelected, isNewPane = false, testSuite, setTest, saved, setSaved }) {
     // by default keep in depth steps opened
@@ -49,6 +28,8 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
     const [removeHover, setRemoveHover] = useState(false);
     // represents either test data, or a new pane
     const [pane, setPane] = useState({})
+    // dup/del dropdown object
+    const [drop, setDrop] = useState();
 
     const { sceneMaps } = useStateContext();
 
@@ -118,43 +99,35 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
         setSaved(false);
     }
 
-    const addNode = () => {
+    const updatePane = (e, update, idx = null) => {
         setTest({
             ...testSuite,
-            timeline: testSuite.timeline.map(t => (t === pane ? { ...t, setup: [...t.setup, newNode] } : t))
+            timeline: testSuite.timeline.map(t => {
+                let newPaneObj = {};
+                if (update === 'addNode') newPaneObj = { ...t, setup: [...t.setup, newNode] };
+                else if (update === 'removeNode') newPaneObj = { ...t, setup: t.setup.filter((n, i) => i !== idx) };
+                else if (update === 'addEvent') newPaneObj = { ...t, events: [...t.events, newEvent] };
+                else if (update === 'removeEvent') newPaneObj = { ...t, events: t.events.filter((n, i) => i !== idx) };
+                else if (update === 'updateScene') newPaneObj = { ...t, scene: e.itemData['_id'] };
+                return (t === pane ? newPaneObj : t)
+            })
         })
         setSaved(false);
     }
 
-    const removeNode = (idx) => {
+    const duplicatePane = () => {
         setTest({
             ...testSuite,
-            timeline: testSuite.timeline.map(t => (t === pane ? { ...t, setup: t.setup.filter((n, i) => i !== idx) } : t))
+            timeline: [...testSuite.timeline, { ...pane }]
         })
-        setSaved(false);
     }
 
-    const addEvent = () => {
-        setTest({
-            ...testSuite,
-            timeline: testSuite.timeline.map(t => (t === pane ? { ...t, events: [...t.events, newEvent] } : t))
-        })
-        setSaved(false);
-    }
-
-    const removeEvent = (idx) => {
-        setTest({
-            ...testSuite,
-            timeline: testSuite.timeline.map(t => (t === pane ? { ...t, events: t.events.filter((n, i) => i !== idx) } : t))
-        })
-        setSaved(false);
-    }
-
-    const updateScene = (e) => {
-        setTest({
-            ...testSuite,
-            timeline: testSuite.timeline.map(t => (t === pane ? { ...t, scene: e.itemData['_id'] } : t))
-        })
+    const dropdownSelect = (e) => {
+        if (e.itemData) {
+            if (e.itemData.value === 'Delete') removePane();
+            else duplicatePane();
+        }
+        drop.clear();
         setSaved(false);
     }
 
@@ -184,11 +157,14 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
                             onChange={(event) => fieldChange(event, "subheader")}
                         />
                     </div>
-                    <RemoveButton
-                        onClick={removePane}
-                        removeHover={removeHover}
-                        setRemoveHover={setRemoveHover}
-                    />
+                    <div className='text-gray-400 p-3 pr-6'>
+                        <DropDownListComponent
+                            cssClass={'inlinecss'} popupHeight="200px" width="0px" popupWidth="140px"
+                            dataSource={['Duplicate', 'Delete']}
+                            ref={(drop) => setDrop(drop)}
+                            change={(e) => dropdownSelect(e)}
+                        />
+                    </div>
                 </div>
             </div>
             {showPane && (<>
@@ -205,18 +181,18 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
                                 onChange: (event) => fieldChange(event, "setup", idx, "name"),
                                 showDesc: showSteps,
                                 descOnChange: (event) => fieldChange(event, "setup", idx, "description"),
-                                removeNode: () => removeNode(idx),
+                                removeNode: (e) => updatePane(e, 'removeNode', idx),
                                 key: idx
                             }
                             return <PaneNode {...paneProps} />
                         })}
                     </div>
-                    {showingAddNode && <AddButton onClick={addNode} />}
+                    {showingAddNode && <AddButton onClick={(e) => updatePane(e, 'addNode')} />}
                 </div>
                 <div className='flex gap-3'>
                     {<DropdownButton state={showMoreTimeline} setState={setShowTimeline} alwaysHidden={pane.events && pane.events.length < 5} />}
                     <div className='w-full'>
-                        {(!pane.events || !pane.events.length) && <AddButton onClick={addEvent} />}
+                        {(!pane.events || !pane.events.length) && <AddButton onClick={(e) => updatePane(e, 'addEvent')} />}
                         {pane.events && pane.events.map((event, idx) => {
                             // if shortened timeline, only show the first 5 until user shows more
                             if (!showMoreTimeline && idx > 4) return <></>;
@@ -231,10 +207,10 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
                                             event={event}
                                             timeOnChange={(event) => fieldChange(event, "events", idx, "time")}
                                             descOnChange={(event) => fieldChange(event, "events", idx, "description")}
-                                            remove={(e) => removeEvent(idx)}
+                                            remove={(e) => updatePane(e, 'removeEvent', idx)}
                                             key={idx}
                                         />
-                                        {showingAddEvent && <AddButton onClick={addEvent} />}
+                                        {showingAddEvent && <AddButton onClick={(e) => updatePane(e, 'addEvent')} />}
                                     </div>
                                 )
                             else return (
@@ -242,7 +218,7 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
                                     event={event}
                                     timeOnChange={(event) => fieldChange(event, "events", idx, "time")}
                                     descOnChange={(event) => fieldChange(event, "events", idx, "description")}
-                                    remove={(e) => removeEvent(idx)}
+                                    remove={(e) => updatePane(e, 'removeEvent', idx)}
                                     key={idx}
                                 />
                             )
@@ -264,7 +240,7 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
                                     dataSource={sceneMaps}
                                     fields={{ text: 'name' }}
                                     placeholder={pane.scene ? sceneMaps.find(s => s._id === pane.scene).name : ''}
-                                    change={(e) => updateScene(e)}
+                                    change={(e) => updatePane(e, 'updateScene')}
                                     value={pane.scene ? sceneMaps.find(s => s._id === pane.scene).name : ''}
                                 />
                             </div>
