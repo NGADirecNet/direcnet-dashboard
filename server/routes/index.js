@@ -42,7 +42,7 @@ router.post('/updateTest', (req, res) => {
   testService.update(req, res)
 })
 
-router.delete('/deleteTest/:id', (req, res) => {
+router.delete('/deleteTest/:_id', (req, res) => {
   testService.destroy(req, res)
 })
 

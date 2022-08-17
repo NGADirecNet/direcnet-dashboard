@@ -60,7 +60,7 @@ const TestHeader = ({ category, categoryChange, title, titleChange, showMore, se
                     >
                         {showMore ? <RiArrowDropDownLine /> : <RiArrowDropRightLine />}
                         <span className='capitalize'>
-                            {`Show ${showMore ? 'Less' : 'More'}`}
+                            {`${showMore ? 'Less' : 'More'}`}
                         </span>
                     </div>}
                 <div

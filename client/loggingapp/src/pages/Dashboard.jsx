@@ -4,7 +4,7 @@ import { GoEye } from 'react-icons/go';
 import { CalendarWidget, SyncWidget, GraphWidget, RecentWidget, SmallWidget, WeatherWidget, ChangeSmallWidget, MainSmallWidget, EditableTextField } from '../components';
 import { getTime } from '../data/smallWidgetUtil';
 import { useStateContext } from '../contexts/ContextProvider';
-import dashApiService from '../dashApi';
+import dashApiService from '../api/dashApi';
 
 const Dashboard = () => {
   const { currentDemo, dashInfo, setDashInfo } = useStateContext();
@@ -73,7 +73,7 @@ const Dashboard = () => {
           ))}
         </div>
       </div>
-      <div className="flex gap-10 m-4 flex-wrap justify-center">
+      <div className="flex gap-8 m-4 flex-wrap justify-center">
         <RecentWidget />
         <GraphWidget />
       </div>

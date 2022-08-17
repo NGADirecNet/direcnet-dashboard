@@ -63,7 +63,7 @@ const testsGrid = [
 const TestingPage = () => {
   const navigate = useNavigate();
   const { tests, currentColor } = useStateContext();
-  const editing = { allowDeleting: true, allowEditing: true };
+  const editing = { allowDeleting: true, allowEditing: false };
   let grid;
 
   const rowSel = () => {
@@ -118,6 +118,7 @@ const TestingPage = () => {
         editSettings={editing}
         rowSelected={rowSel}
         ref={g => grid = g}
+        toolbar={['Delete']}
         sortSettings={{
           columns: [{
             field: 'date',

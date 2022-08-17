@@ -4,7 +4,7 @@ import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import { getTime } from '../../data/smallWidgetUtil';
 import { DiGitBranch } from 'react-icons/di';
 import { useStateContext } from '../../contexts/ContextProvider';
-import atlassianApiService from '../../atlassianApi';
+import atlassianApiService from '../../api/atlassianApi';
 
 const ChangeSmallWidget = () => {
     const navigate = useNavigate();

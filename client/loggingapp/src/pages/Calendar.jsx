@@ -3,7 +3,7 @@ import { ScheduleComponent, ViewsDirective, ViewDirective, Day, Week, WorkWeek, 
 import { DatePickerComponent } from '@syncfusion/ej2-react-calendars';
 import { useStateContext } from '../contexts/ContextProvider';
 import { Page } from '../components';
-import calendarApiService from '../calendarApi';
+import calendarApiService from '../api/calendarApi';
 
 // eslint-disable-next-line react/destructuring-assignment
 const PropertyPane = (props) => <div className="mt-5">{props.children}</div>;

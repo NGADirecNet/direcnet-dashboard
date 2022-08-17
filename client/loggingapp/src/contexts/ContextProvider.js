@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import testApiService from '../testApi';
-import calendarApiService from '../calendarApi';
-import atlassianApiService from '../atlassianApi';
-import mapsApiService from '../mapsApi';
-import dashApiService from '../dashApi';
+import testApiService from '../api/testApi';
+import calendarApiService from '../api/calendarApi';
+import atlassianApiService from '../api/atlassianApi';
+import mapsApiService from '../api/mapsApi';
+import dashApiService from '../api/dashApi';
 
 const StateContext = createContext();
 

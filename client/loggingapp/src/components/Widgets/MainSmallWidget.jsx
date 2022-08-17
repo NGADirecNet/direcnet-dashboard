@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import { getTime } from '../../data/smallWidgetUtil';
-import atlassianApiService from '../../atlassianApi';
+import atlassianApiService from '../../api/atlassianApi';
 import { BsCheck2 } from 'react-icons/bs';
 
 const ChangeSmallWidget = () => {

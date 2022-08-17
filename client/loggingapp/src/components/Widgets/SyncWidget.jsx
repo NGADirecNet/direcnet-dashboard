@@ -1,7 +1,7 @@
 import React from 'react'
 import { IoIosMore } from 'react-icons/io';
 import { useStateContext } from '../../contexts/ContextProvider';
-import dashApiService from '../../dashApi';
+import dashApiService from '../../api/dashApi';
 import AddButton from '../AddButton';
 import SyncPane from './SyncPane';
 

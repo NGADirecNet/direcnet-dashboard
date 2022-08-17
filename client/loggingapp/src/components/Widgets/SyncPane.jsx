@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { FiExternalLink } from 'react-icons/fi';
 import { MdDeleteForever, MdModeEditOutline } from 'react-icons/md';
 import { useStateContext } from '../../contexts/ContextProvider';
-import dashApiService from '../../dashApi';
+import dashApiService from '../../api/dashApi';
 import EditableTextField from '../EditableTextField';
 
 

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { TestHeader, Map, TestPane, TestNote, TestTime, AddButton, MapsPane } from '../components';
+import { TestHeader, Map, MapsPane } from '../components';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useStateContext } from '../contexts/ContextProvider';
-import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import { getMapLogo } from '../data/dataUtil';
 import { newMapsPane } from '../data/contants';
 import { MdNavigateNext, MdNavigateBefore } from 'react-icons/md';
-import mapsApiService from '../mapsApi';
+import mapsApiService from '../api/mapsApi';
 
 const MapsView = (props) => {
     const { sceneMaps, setSceneMaps } = useStateContext();
@@ -129,9 +128,9 @@ const MapsView = (props) => {
             </div>
             {/* Everything Below header */}
 
-            <div className='flex gap-2'>
+            <div className='flex gap-2 flex-wrap lg:flex-nowrap justify-center'>
                 {/* Left column */}
-                <div className='w-2/3'>
+                <div className='lg:w-2/3'>
                     {(scene &&scene.actions) && scene.actions.map((action, idx) =>
                         <MapsPane
                             action={action}
@@ -157,7 +156,7 @@ const MapsView = (props) => {
                     />
                 </div>
                 {/* Right Column */}
-                <div className='w-1/3 flex-col'>
+                <div className='lg:w-1/3 flex-col'>
                     <div className='h-96 my-2'>
                         {(scene && scene.actions.length) ? ( 
                         <div className='border-1 rounded-2xl p-1'>

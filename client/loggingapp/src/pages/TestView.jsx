@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useStateContext } from '../contexts/ContextProvider';
 import { newNote, newTestSuite, newTime } from '../data/contants'
 import DetailsPane from './DetailsPane';
-import testApiService from '../testApi';
+import testApiService from '../api/testApi';
 import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import { createSpinner, showSpinner, hideSpinner } from '@syncfusion/ej2-react-popups';
 import { getTestType } from '../data/dataUtil';
@@ -237,6 +237,16 @@ const TestView = (props) => {
         setSaved(false);
     }
 
+    const deleteTest = () => {
+        testApiService.destroy(test)
+            .then(res => {
+                if (res) {
+                    navigate('/tests/')
+                    setTests([...tests.filter(t => t._id !== test._id)])
+                }
+            })
+    }
+
     return (
         <div id="container" className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
             <div className='flex gap-4'>
@@ -249,11 +259,13 @@ const TestView = (props) => {
                     setTest={setTest}
                     saved={saved}
                     setSaved={setSaved}
+                    deleteTest={deleteTest}
+                    isNew={props.new}
                 />
             }
-            <div className='flex gap-2'>
+            <div className='flex gap-2 flex-wrap lg:flex-nowrap justify-center'>
                 {/* Left column */}
-                <div className='w-2/3'>
+                <div className='lg:w-2/3'>
                     {timeline && timeline.map((scen, idx) =>
                         <TestPane
                             scenario={scen}
@@ -277,7 +289,7 @@ const TestView = (props) => {
                     />
                 </div>
                 {/* Right Column */}
-                <div className='w-1/3 flex-col'>
+                <div className='lg:w-1/3 flex-col'>
                     <div className='h-96 my-2'>
                         <div className='border-1 rounded-2xl p-1'>
                             {(currentAction !== null) && <Map height="380px" onResize={showMore}
