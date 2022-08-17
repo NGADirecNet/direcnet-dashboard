@@ -73,7 +73,7 @@ router.get('/bitbucket/branches', (req, res) => {
   atlassianservice.get(req, res);
 })
 
-router.get('/bitbucket/commits/:branch', (req, res) => {
+router.get('/bitbucket/commits/:branch*', (req, res) => {
   atlassianservice.getCommits(req, res);
 })
 

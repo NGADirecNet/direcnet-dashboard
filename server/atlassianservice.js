@@ -35,7 +35,7 @@ function getCommits(req, res) {
 }
 
 async function getProgress(req, res) {
-    let branchIds;
+    let branchIds = [];
     let commits = [];
     // takes latest 5 branches and queries all the recent commits from them
     await axios({
