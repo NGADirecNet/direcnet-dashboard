@@ -21,7 +21,7 @@ const PrecipitaionBar = ({ series, xAxis, yAxis, y2Data }) => {
             innerRadius='100%' 
             progressThickness={10} 
             trackThickness={10} 
-            value={daily[0].pop} 
+            value={daily[0].pop * 100} 
             animation={{
                 enable: true,
                 duration: 2000,

@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
-import { dropdownData } from '../data/dummy';
+
+const defaultDropdownData = [
+  {
+    Id: '1',
+    Time: 'Last Week',
+  },
+  {
+    Id: '2',
+    Time: 'Last Month',
+  }, {
+    Id: '3',
+    Time: 'All Time',
+  },
+];
 
 const Dropdown = ({ currentMode, fields = null, data = null, width = null, defaultValue=null, onChange=null }) => {
   const [value, setValue] = useState(defaultValue)
@@ -16,7 +29,7 @@ const Dropdown = ({ currentMode, fields = null, data = null, width = null, defau
         style={{ border: 'none', color: (currentMode === 'Dark') && 'white' }}
         value={value}
         change={(input) => setValue(input.value)}
-        dataSource={data ? data : dropdownData}
+        dataSource={data ? data : defaultDropdownData}
         popupHeight="220px"
         popupWidth={width ? width : "120px"}
       />

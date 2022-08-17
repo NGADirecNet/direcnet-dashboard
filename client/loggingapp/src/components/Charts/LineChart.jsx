@@ -2,7 +2,7 @@ import React from 'react';
 import { ChartComponent, SeriesCollectionDirective, SeriesDirective, Inject, LineSeries, DateTime, Legend, Tooltip, Zoom, Scrollbar, AxesDirective, AxisDirective } from '@syncfusion/ej2-react-charts';
 import { useStateContext } from '../../contexts/ContextProvider';
 
-const LineChart = ({ series, xAxis, yAxis, y2Data }) => {
+const LineChart = ({ series, xAxis, yAxis, y2Data, tooltip=null }) => {
   const { currentMode } = useStateContext();
   
   return (
@@ -17,7 +17,7 @@ const LineChart = ({ series, xAxis, yAxis, y2Data }) => {
       //   labelFormat: '{value}°F'
       // }}
       chartArea={{ border: { width: 0 } }}
-      tooltip={{
+      tooltip={tooltip ? tooltip : {
         enable: true,
         format: 'Seq Num: ${point.x} : <b>${point.y}</b>' //${point.tooltip}'
       }}

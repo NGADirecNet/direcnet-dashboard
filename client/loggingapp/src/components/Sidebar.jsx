@@ -52,10 +52,10 @@ const Sidebar = () => {
           name: 'weather',
           icon: <TiWeatherPartlySunny />,
         },
-        {
-          name: 'charts',
-          icon: <AiOutlineAreaChart />,
-        },
+        // {
+        //   name: 'charts',
+        //   icon: <AiOutlineAreaChart />,
+        // },
       ],
     },
   ];

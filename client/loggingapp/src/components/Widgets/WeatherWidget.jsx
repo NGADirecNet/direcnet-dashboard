@@ -6,10 +6,11 @@ import { AiOutlineCloud, } from 'react-icons/ai'
 import { useWeatherContext } from '../../contexts/WeatherContextProvider'
 import { apiIcon } from '../../data/weatherUtil'
 import { days } from '../../data/contants'
+import Dropdown from '../Dropdown'
 
 const WeatherWidget = () => {
 
-    const { weatherData, daily } = useWeatherContext();
+    const { weatherData, daily, current, hourly } = useWeatherContext();
 
     /**
      * Returns frequently used circular icon button
@@ -64,16 +65,23 @@ const WeatherWidget = () => {
             </div>
             <div className="mt-10">
                 <div className="mt-8">
-                    <div className="flex gap-4">
-                        {getButtonIcon("", "rgb(254, 201, 15)", <BsCloudSun />)}
+                    <div className="flex gap-4 justify-between">
+                        {/* {getButtonIcon("", "rgb(254, 201, 15)", <BsCloudSun />)} */}
                         <div>
-                            <p className="text-md font-semibold">Next Suitable Time:</p>
-                            <p className="text-sm text-gray-400">Interval</p>
+                            <p className="text-md font-semibold">Current:</p>
+                            <p className="text-sm text-gray-400">{current && new Date(current.dt * 1000).toLocaleTimeString()}</p>
+                        </div>
+                        <div>
+                            <Dropdown
+                            />
                         </div>
                     </div>
                     <div className='flex gap-4 mt-4 justify-center items-center pb-3 border-b-1'>
                         {getButtonIcon("gray", "#FAFAFB", <AiOutlineCloud />)}
-                        <p className='text-sm text-center font-semibold'>[Day]</p>
+                        <div>
+                            <p className="text-md font-semibold">{current && current.temp.toString().slice(0,2) + '°'}</p>
+                            <p className="text-sm text-gray-400">Feels Like: {current && current.feels_like.toString().slice(0,2) + '°'}</p>
+                        </div>
                         <p className='text-sm text-center font-semibold'>[Start Time - End Time]</p>
                     </div>
                     <div className="flex gap-4 mt-4">

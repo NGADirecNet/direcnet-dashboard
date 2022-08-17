@@ -56,7 +56,7 @@ const App = () => {
                             {/* Apps */}
                             <Route path='/calendar' element={<Calendar />} />
                             <Route path='/weather' element={<Weather />} />
-                            <Route path='/charts' element={<Charts />} />
+                            {/* <Route path='/charts' element={<Charts />} /> */}
 
                             {/* Tests */}
                             <Route path='/tests/:id' element={<TestView />} />

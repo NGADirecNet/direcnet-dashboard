@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Page } from '../components';
-import { EditorData } from '../data/dummy'
 // import { tduDataLines, xAxis, yAxis } from '../data/tdudatadummy';
 import Area from './Charts/Area';
 import Bar from './Charts/Bar';

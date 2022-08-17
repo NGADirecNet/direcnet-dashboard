@@ -153,7 +153,7 @@ const CalendarWidget = () => {
             </div>
             <div className="border-b-1 border-color pb-4 mt-2">
                 <p className="text-md font-semibold mb-2">Events</p>
-                <div className='h-96 overflow-auto'>
+                <div className='h-72 overflow-auto'>
                     {eventsInRange
                         .sort((a, b) => {
                             const getTime = (ev) => ev.RecurrenceRule ? getNextRecurDate(ev) : new Date(ev.StartTime);

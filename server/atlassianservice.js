@@ -20,7 +20,7 @@ function getCommits(req, res) {
     const { branch } = req.params;
     axios({
         method: "get",
-        url: "https://cuse-atlassian.alionscience.com:8446/rest/api/1.0/projects/DNET/repos/Simulink/commits?until=" + decodeURIComponent(branch),
+        url: "https://cuse-atlassian.alionscience.com:8446/rest/api/1.0/projects/DNET/repos/Simulink/commits?until=" + branch,
         headers: {
             'Authorization': 'Basic ' + process.env.BITBUCKET_AUTH
         }
