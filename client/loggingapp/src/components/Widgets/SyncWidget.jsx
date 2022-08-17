@@ -1,46 +1,27 @@
 import React from 'react'
 import { IoIosMore } from 'react-icons/io';
+import { useStateContext } from '../../contexts/ContextProvider';
+import dashApiService from '../../dashApi';
+import AddButton from '../AddButton';
 import SyncPane from './SyncPane';
 
-const weeklyStats = [
-    {
-      amount: 'Complete',
-      title: 'DNET-313',
-      desc: 'Anthony',
-      iconBg: '#0d3d4b',
-      pcColor: 'green-600',
-    },
-    {
-      amount: 'In Progress',
-      title: 'DNET-323',
-      desc: 'Andrew',
-      iconBg: '#0d3d4b',
-      pcColor: 'green-600',
-    },
-    {
-      amount: 'Complete',
-      title: 'DNET-296',
-      desc: 'Joe',
-      iconBg: '#0d3d4b',
-      pcColor: 'green-600',
-    },
-    {
-      amount: 'In Progress',
-      title: 'DNET-301',
-      desc: 'Lucas',
-      iconBg: '#0d3d4b',
-      pcColor: 'green-600',
-    },
-    {
-      amount: 'Ready for Testing',
-      title: 'DNET-319',
-      desc: 'Corey',
-      iconBg: '#0d3d4b',
-      pcColor: 'green-600',
-    },
-];
-
 const SyncWidget = () => {
+
+    const { dashInfo, setDashInfo } = useStateContext();
+
+    const addItem = () => {
+        const newDashInfo = {
+            ...dashInfo, 
+            sync: [...dashInfo.sync, {
+                title: "New Work Item",
+                assignees: ["Assignee 1", "Assignee 2"],
+                status: "Backlog",
+                link: ''
+            }]
+        }
+        setDashInfo(newDashInfo);
+        dashApiService.update(newDashInfo);
+    }
 
     return (
         <div className="md:w-400 bg-white dark:text-gray-200 dark:bg-secondary-dark-bg rounded-2xl p-6 m-3">
@@ -56,9 +37,12 @@ const SyncWidget = () => {
             </div>
 
             <div className="mt-6 h-400 overflow-auto p-1">
-                {weeklyStats.map((item) => (
-                    <SyncPane item={item} />
+                {dashInfo && dashInfo.sync.map((item, idx) => (
+                    <SyncPane key={idx} item={item} itemIdx={idx} />
                 ))}
+            </div>
+            <div>
+                <AddButton onClick={addItem} />
             </div>
         </div>
     )

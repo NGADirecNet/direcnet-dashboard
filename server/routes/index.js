@@ -7,7 +7,8 @@ const tduResService = require('../tduResService');
 const calendarService = require('../calendarService');
 const atlassianservice = require('../atlassianservice');
 const weatherService = require('../weatherService');
-const sceneService = require('../sceneService')
+const sceneService = require('../sceneService');
+const dashService = require('../dashService');
 
 router.get('/heroes', (req, res) => {
   heroesService.get(req, res);
@@ -100,5 +101,13 @@ router.post('/updateMap', (req, res) => {
 router.delete('/deleteMap/:id', (req, res) => {
   sceneService.destroy(req, res)
 })
+
+router.get('/dash', (req, res) => {
+  dashService.get(req, res);
+});
+
+router.post('/updateDash', (req, res) => {
+  dashService.update(req, res);
+});
 
 module.exports = router;

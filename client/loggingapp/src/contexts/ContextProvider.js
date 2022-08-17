@@ -3,6 +3,7 @@ import testApiService from '../testApi';
 import calendarApiService from '../calendarApi';
 import atlassianApiService from '../atlassianApi';
 import mapsApiService from '../mapsApi';
+import dashApiService from '../dashApi';
 
 const StateContext = createContext();
 
@@ -28,6 +29,7 @@ export const ContextProvider = ({ children }) => {
     const [branches, setBranches] = useState([]);
     const [sceneMaps, setSceneMaps] = useState([]);
     const [progress, setProgress] = useState([]);
+    const [dashInfo, setDashInfo] = useState(null);
 
     useEffect(() => {
         testApiService.get()
@@ -52,7 +54,6 @@ export const ContextProvider = ({ children }) => {
         mapsApiService.get()
             .then(json => {
                 if (json) {
-                    console.log("JSON RESPONSE", json)
                     setSceneMaps(json);
                 }
             })
@@ -60,6 +61,12 @@ export const ContextProvider = ({ children }) => {
             .then(json => {
                 if (json) {
                     setProgress(json.commits)
+                }
+            })
+        dashApiService.get()
+            .then(json => {
+                if (json) {
+                    setDashInfo(json[0])
                 }
             })
     }, [])
@@ -99,7 +106,9 @@ export const ContextProvider = ({ children }) => {
                 sceneMaps,
                 setSceneMaps,
                 progress,
-                setProgress
+                setProgress,
+                dashInfo,
+                setDashInfo
             }}
         >
             {children}

@@ -10,7 +10,7 @@ import Dropdown from '../Dropdown'
 
 const WeatherWidget = () => {
 
-    const { weatherData, daily, current, hourly } = useWeatherContext();
+    const { daily, current } = useWeatherContext();
 
     /**
      * Returns frequently used circular icon button
@@ -99,7 +99,7 @@ const WeatherWidget = () => {
                         {/* todo exclude weekend days */}
                         {daily && daily.map((d, idx) => {
                             if (idx > 4) return <></>;
-                            return getDay("gray", "", apiIcon.find(i => i.name === d.weather[0].icon.slice(0, 2)).icon, days[new Date(d.dt * 1000).getUTCDay()].slice(0, 3))
+                            return <div key={idx}>{getDay("gray", "", apiIcon.find(i => i.name === d.weather[0].icon.slice(0, 2)).icon, days[new Date(d.dt * 1000).getUTCDay()].slice(0, 3))}</div>
                         })}
                     </div>
                     <div className="flex gap-4 mt-4">

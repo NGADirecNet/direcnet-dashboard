@@ -39,7 +39,7 @@ const ChangeSmallWidget = () => {
 
     // for when commits change, update our widgets display properties
     useEffect(() => {
-        if (commits.length) {
+        if (commits && commits.length) {
             const mostRecent = commits[0]
             setItem({
                 ...getTime(mostRecent.authorTimestamp, 'Software Change', mostRecent.displayId.slice(0, 7)),

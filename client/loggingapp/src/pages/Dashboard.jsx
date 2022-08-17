@@ -1,12 +1,13 @@
 import React from 'react';
 import { FaJira, FaConfluence, FaBitbucket } from 'react-icons/fa'
 import { GoEye } from 'react-icons/go';
-import { CalendarWidget, SyncWidget, GraphWidget, RecentWidget, SmallWidget, WeatherWidget, ChangeSmallWidget, MainSmallWidget } from '../components';
+import { CalendarWidget, SyncWidget, GraphWidget, RecentWidget, SmallWidget, WeatherWidget, ChangeSmallWidget, MainSmallWidget, EditableTextField } from '../components';
 import { getTime } from '../data/smallWidgetUtil';
 import { useStateContext } from '../contexts/ContextProvider';
+import dashApiService from '../dashApi';
 
 const Dashboard = () => {
-  const { currentDemo } = useStateContext();
+  const { currentDemo, dashInfo, setDashInfo } = useStateContext();
   const normalLink = 'flex items-center gap-5 pl-4 pt-2 pb-1.5 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray m-1';
   const smallWidgetData = [
     {
@@ -28,6 +29,15 @@ const Dashboard = () => {
       <span>{text}</span>
     </a>
 
+  const updateLatest = (e, field, idx) => {
+    const newDashInfo = {
+      ...dashInfo, 
+      latest: [...dashInfo.latest.map((l, i) => (i === idx ? { ...l, [field]: e.value } : l) )]
+    }
+    setDashInfo(newDashInfo);
+    dashApiService.update(newDashInfo);
+  }
+
   return (
     <div className="mt-24">
       <div className="flex flex-wrap lg:flex-nowrap justify-center ">
@@ -37,20 +47,24 @@ const Dashboard = () => {
           {getAtlassianButton("https://cuse-atlassian.alionscience.com:8446/plugins/servlet/bb_ag/projects/DNET/repos/simulink/commits", <FaBitbucket />, "BitBucket")}
         </div>
         <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
-          <div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56  p-4 pt-9 rounded-2xl ">
+          <div className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56  p-4 pt-5 rounded-2xl ">
             <p className='text-lg font-semibold'>Latest</p>
-            <div className='flex justify-between px-1 py-1'>
-              <p>SW</p>
-              <p>Jun 29 2022</p>
-            </div>
-            <div className='flex justify-between px-1 py-1'>
-              <p>FW</p>
-              <p>2022/06/01</p>
-            </div>
-            <div className='flex justify-between px-1 py-1'>
-              <p>GUI</p>
-              <p>1.0</p>
-            </div>
+            {dashInfo && dashInfo.latest.map((d, idx) => {
+              return (
+                <div className='flex justify-between px-1 py-1'>
+                  <EditableTextField
+                    placeholder={d.name}
+                    className=''
+                    onChange={(e) => updateLatest(e, 'name', idx)}
+                  />
+                  <EditableTextField
+                    placeholder={d.value}
+                    className=''
+                    onChange={(e) => updateLatest(e, 'value', idx)}
+                  />
+                </div>
+              )
+            })}
           </div>
           <ChangeSmallWidget />
           <MainSmallWidget />

@@ -49,7 +49,7 @@ const LineChart = ({ series, xAxis, yAxis, y2Data, tooltip=null }) => {
       </AxesDirective>
       <SeriesCollectionDirective>
         {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-        {series.map((item, index) => <SeriesDirective key={index} {...item} />)}
+        {series && series.map((item, index) => <SeriesDirective key={index} {...item} />)}
       </SeriesCollectionDirective>
     </ChartComponent>
   );

@@ -1,25 +1,13 @@
 import React from 'react'
-import Dropdown from '../Dropdown'
 import LineChart from '../Charts/LineChart'
 import { useStateContext } from '../../contexts/ContextProvider';
+import { IoIosMore } from 'react-icons/io';
 
 const GraphWidget = () => {
-    const currentMode = 'white'
     const { progress } = useStateContext();
 
-    // const progressSeries = progress.map(branch => {
-    //     return {
-    //         dataSource: branch.values,
-    //         xName: 'authorTimestamp',
-    //         yName: '0',
-    //         name: branch.branch,
-    //         width: '2',
-    //         marker: { visible: true, width: 10, height: 10 },
-    //         type: 'Line'
-    //     }
-    // })
-
     const x = {
+        title: "Time",
         valueType: 'DateTime',
         labelFormat: 'MMM d y',
         intervalType: 'Months',
@@ -29,6 +17,7 @@ const GraphWidget = () => {
     };
 
     const y = {
+        title: "Number of Commits",
         labelFormat: '{value}',
         rangePadding: 'None',
         minimum: 0,
@@ -39,7 +28,7 @@ const GraphWidget = () => {
         minorTickLines: { width: 0 },
     };
 
-    const aggregate = progress.map(branch => {
+    const aggregate = progress && progress.map(branch => {
         const re = branch.values.reduce((groups, commit) => {
             const date = new Date(commit.authorTimestamp).toISOString().split('T')[0];
             if (!groups[date]) {
@@ -55,7 +44,7 @@ const GraphWidget = () => {
         }
     })
 
-    const progressSeries = aggregate.map(branch => {
+    const progressSeries = aggregate && aggregate.map(branch => {
         return {
             dataSource: branch.dates,
             xName: 'date',
@@ -70,8 +59,14 @@ const GraphWidget = () => {
     return (
         <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg p-6 rounded-2xl w-96 md:w-760">
             <div className="flex justify-between items-center gap-2 mb-10">
-                <p className="text-xl font-semibold">Stability Overview</p>
-                <Dropdown currentMode={currentMode} />
+                <p className="text-xl font-semibold">Git Overview</p>
+                <button
+                    type="button"
+                    className="text-xl font-semibold text-gray-500"
+                    onClick={() => window.open('https://cuse-atlassian.alionscience.com:8446/projects/DNET/repos/simulink/branches')}
+                >
+                    <IoIosMore />
+                </button>
             </div>
             <div className="md:w-full overflow-auto">
                 <LineChart
@@ -80,7 +75,7 @@ const GraphWidget = () => {
                     yAxis={y}
                     tooltip={{
                         enable: true,
-                        format: '${point.x} : <b>${point.y}</b>'
+                        format: '${point.x} : <b>${point.y}</b> commits'
                     }}
                 />
             </div>
