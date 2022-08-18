@@ -11,7 +11,13 @@ const dashSchema = new Schema(
         assignees: [],
         link: String,
         status: String
-    }]
+    }],
+    locations: [{
+      name: String,
+      lat: Number,
+      long: Number
+    }],
+    weatherDefault: Number
   },
   { autoIndex: false }
 );

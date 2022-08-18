@@ -9,7 +9,7 @@ import { useStateContext } from '../contexts/ContextProvider'
 
 const Weather = () => {
     const { weatherData, current, hourly, daily } = useWeatherContext();
-    const { currentColor } = useStateContext();
+    const { currentColor, dashInfo } = useStateContext();
 
     // https://openweathermap.org/api/one-call-3
 
@@ -45,8 +45,8 @@ const Weather = () => {
             <div className='flex gap-2'>
                 {(weatherData && current && hourly && daily) &&
                     <>
-                        <div className='flex w-full gap-2'>
-                            <div className='w-2/3'>
+                        <div className='flex w-full gap-2 flex-wrap lg:flex-nowrap justify-center'>
+                            <div className='w-full lg:w-2/3'>
                                 <div className='flex p-4 border-1 rounded-lg h-72 shadow-md gap-2'>
                                     <div className='w-1/2'>
                                         <div className='flex justify-between'>
@@ -54,7 +54,7 @@ const Weather = () => {
                                                 <p className='text-2xl'>
                                                     <HiOutlineLocationMarker />
                                                 </p>
-                                                <p className='font-semibold'>Rome, NY</p>
+                                                <p className='font-semibold'>{dashInfo.locations[dashInfo.weatherDefault].name}</p>
                                             </div>
                                             <div>
                                                 <p className='mx-1 text-gray-400'>{unixToDate(current.dt).toLocaleTimeString([], {hour: 'numeric', minute: '2-digit'})}</p>
@@ -133,7 +133,7 @@ const Weather = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className='w-1/3 p-4 border-1 rounded-lg shadow-md'>
+                            <div className='w-full lg:w-1/3 p-4 border-1 rounded-lg shadow-md'>
                                 {daily.map((d, i) => {
                                     // exclude today
                                     if (i === 0) return <></>

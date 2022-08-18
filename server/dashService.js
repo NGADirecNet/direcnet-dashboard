@@ -17,11 +17,11 @@ function get(req, res) {
 
 function create(req, res) {
     const {
-        latest, sync
+        latest, sync, locations, weatherDefault
     } = req.body;
 
     const d = new Dash({
-        latest, sync
+        latest, sync, locations, weatherDefault
     });
 
     d
@@ -36,13 +36,15 @@ function create(req, res) {
 
 function update(req, res) {
     const {
-        _id, latest, sync
+        _id, latest, sync, locations, weatherDefault
     } = req.body;
 
     Dash.findOne({ _id })
         .then(d => {
             d.latest = latest;
             d.sync = sync;
+            d.locations = locations;
+            d.weatherDefault = weatherDefault;
             d.save()
                 .then(res.json(d));
         })

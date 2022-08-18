@@ -2,9 +2,9 @@ const baseAPI = '/api';
 
 const weatherApiService = {
 
-    get() {
+    get(lat, long) {
         return new Promise((resolve, reject) => {
-            fetch(`${baseAPI}/weather`)
+            fetch(`${baseAPI}/weather/${lat}/${long}`)
                 .then(res => res.json())
                 .then(json => resolve(json))
                 .catch(err => {

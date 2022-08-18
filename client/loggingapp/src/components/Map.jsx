@@ -13,6 +13,7 @@ const Map = (props) => {
     useEffect(() => {
         if (props.scene)
             setScene(props.scene);
+        setResizing(false)
     }, [props.scene])
 
     useEffect(() => {

@@ -27,7 +27,7 @@ const MapsView = (props) => {
             //todo loading spinner
         }
         else if (params.id) {
-             setScene(sceneMaps.find(s => s._id.toString() === params.id));
+            setScene(sceneMaps.find(s => s._id.toString() === params.id));
             setSaved(true);
         }
         else if (props.new) {
@@ -97,7 +97,6 @@ const MapsView = (props) => {
         else
             mapsApiService.update(scene)
                 .then(res => {
-                    console.log("RES", res)
                     if (res)
                         setSceneMaps([
                             ...sceneMaps.filter(s => s._id !== scene._id),
@@ -148,7 +147,6 @@ const MapsView = (props) => {
                         scene={scene}
                         setScene={setScene}
                         setSelected={(a) => {
-                            console.log(a)
                             setSelectedAction(a)}}
                         saved={saved}
                         setSaved={setSaved}

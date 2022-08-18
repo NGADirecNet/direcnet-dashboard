@@ -82,7 +82,7 @@ router.get('/bitbucket/progress', (req, res) => {
   atlassianservice.getProgress(req, res);
 })
 
-router.get('/weather', (req, res) => {
+router.get('/weather/:lat/:long', (req, res) => {
   weatherService.get(req, res);
 })
 

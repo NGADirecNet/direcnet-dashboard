@@ -8,6 +8,7 @@ import { Dashboard, Calendar, Weather, Charts, EmanePage, TestingPage, TestView,
 import './App.css'
 
 import { useStateContext } from './contexts/ContextProvider';
+import SettingsPage from './pages/SettingsPage';
 
 const App = () => {
     const { activeMenu, currentColor, tests } = useStateContext();
@@ -17,7 +18,8 @@ const App = () => {
                 <div className='fixed right-4 bottom-4' style={{ zIndex: '1000' }}>
                     <TooltipComponent content="Settings" position="Top">
                         <button type='button' className='text-3xl p-3 hover:drop-shadow-xl hover:bg-light-gray text-white'
-                            style={{ background: currentColor, borderRadius: '50%' }}>
+                            style={{ background: currentColor, borderRadius: '50%' }}
+                            onClick={() => window.location.replace('/settings')}>
                             <FiSettings />
                         </button>
                     </TooltipComponent>
@@ -76,6 +78,8 @@ const App = () => {
                                     return null;
                                 }
                             } />
+
+                            <Route path='/settings' element={<SettingsPage />} />
                         </Routes>
                     </div>
                     <Footer />

@@ -8,6 +8,7 @@ import RemoveButton from './RemoveButton';
 import { useStateContext } from '../contexts/ContextProvider';
 import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import DropdownButton from './DropdownButton';
+import PaneAttachment from './PaneAttachment';
 
 export default function TestPane({ scenario, isSelected, setSelected, isNewPane = false, testSuite, setTest, saved, setSaved }) {
     // by default keep in depth steps opened
@@ -24,6 +25,8 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
     const [showingAddEvent, showAddEvent] = useState(false);
     // show or hide the option to show extra info about the scene/map
     const [showScene, setShowScene] = useState(true);
+    // show or hide the option to add a new attachment to Attachments section of Pane
+    const [showingAddAttach, showAddAttach] = useState(false);
     // display red border/shadow/button when hovering over RemoveButton
     const [removeHover, setRemoveHover] = useState(false);
     // represents either test data, or a new pane
@@ -100,6 +103,7 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
     }
 
     const updatePane = (e, update, idx = null) => {
+        if (update === 'updateScene' && e.e === null) return;
         setTest({
             ...testSuite,
             timeline: testSuite.timeline.map(t => {
@@ -109,8 +113,18 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
                 else if (update === 'addEvent') newPaneObj = { ...t, events: [...t.events, newEvent] };
                 else if (update === 'removeEvent') newPaneObj = { ...t, events: t.events.filter((n, i) => i !== idx) };
                 else if (update === 'updateScene') newPaneObj = { ...t, scene: e.itemData['_id'] };
+                else if (update === 'addAttach') newPaneObj = { ...t, attachments: [...t.attachments, { name: "New Attachment", link: "Sharepoint Link here"}]}
+                else if (update === 'removeAttach') newPaneObj = { ...t, attachments: [...t.attachments.filter((a, i) => i !== idx)]}
                 return (t === pane ? newPaneObj : t)
             })
+        })
+        setSaved(false);
+    }
+
+    const updateAttach = (e, field, idx) => {
+        setTest({
+            ...testSuite,
+            timeline: testSuite.timeline.map(t => (t === pane ? { ...t, attachments: [...t.attachments.map((a, i) => (i === idx ? { ...a, [field]: e.value } : a))] } : t))
         })
         setSaved(false);
     }
@@ -174,7 +188,7 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
                     onMouseLeave={() => showAddNode(false)}
                 >
                     {<DropdownButton state={showSteps} setState={setShowSteps} />}
-                    <div className='flex gap-3 m-1 justify-center w-full'>
+                    <div className='flex gap-3 m-1 justify-center w-full overflow-x-auto'>
                         {pane.setup && pane.setup.map((node, idx) => {
                             const paneProps = {
                                 node: node,
@@ -254,13 +268,25 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
                             <p className='font-semibold text-`sm'>Attachments:</p>
                             {showAttach && (
                                 <>
-                                    <div className='grid grid-cols-3 gap-2'>
-                                        {pane.attachments && pane.attachments.map((media) =>
-                                            <video width="320" height="240" controls>
-                                                <source src={media} alt="video" />
-                                            </video>
-                                        )}
-                                    </div>
+                                    {pane.attachments.length && pane.attachments.map((m, i) => {
+                                        const attachProp = (<PaneAttachment
+                                            attachment={m}
+                                            nameOnChange={(e) => updateAttach(e, 'name', i)}
+                                            linkOnChange={(e) => updateAttach(e, 'link', i)}
+                                            remove={(e) => updatePane(e, 'removeAttach', i)}
+                                        />)
+                                        if (i === pane.attachments.length - 1)
+                                            return (
+                                                <div
+                                                    onMouseEnter={() => showAddAttach(true)}
+                                                    onMouseLeave={() => showAddAttach(false)}
+                                                >
+                                                    {attachProp}
+                                                    {showingAddAttach && <AddButton onClick={(e) => updatePane(e, 'addAttach')} />}
+                                                </div>
+                                            )
+                                        else return (attachProp);
+                                    })}
                                 </>
                             )}
                         </div>

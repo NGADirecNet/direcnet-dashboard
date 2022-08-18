@@ -99,6 +99,7 @@ export default function MapsPane({ action, isSelected, setSelected, isNewPane = 
             ...scene,
             actions: [...scene.actions, { ...pane }]
         })
+        setSaved(false);
     }
 
     const dropdownSelect = (e) => {
@@ -226,7 +227,7 @@ export default function MapsPane({ action, isSelected, setSelected, isNewPane = 
                                         setScene={setScene}
                                         idx={idx}
                                         pane={pane}
-                                        onChange={(e => setSaved(false))}
+                                        onChange={(e =>setSaved(false))}
                                     />
                                 )
                                 if (idx === pane.lines.length - 1)

@@ -8,6 +8,7 @@ export default function MapMarkerInfo({ info, remove, scene, setScene, idx, pane
 
     const fieldChange = (event, field) => {
         if (!event.value) return;
+        if (field === 'shape' && event.value === info.shape) return;
         // lat long or name need to be dataSource[0]
         let newInfo;
         if (field === 'name' || field === 'latitude' || field === 'longitude') {

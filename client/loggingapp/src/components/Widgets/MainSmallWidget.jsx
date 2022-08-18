@@ -47,7 +47,6 @@ const ChangeSmallWidget = () => {
 
     function changeCommit(event) {
         const com = commits.find(c => c.displayId === event.itemData.value)
-        console.log("com", com)
         // set curr branch
         setItem({
             ...getTime(com.authorTimestamp, '- Main Branch', com.displayId),

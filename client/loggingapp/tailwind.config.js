@@ -7,6 +7,9 @@ module.exports = {
         body: ['Open Sans', 'sans-serif'],
       },
       extend: {
+        colors: {
+          'hii': '#0d3d4b'
+        },
         fontSize: {
           14: '14px',
         },

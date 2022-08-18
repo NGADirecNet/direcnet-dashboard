@@ -49,9 +49,11 @@ async function getProgress(req, res) {
             branchIds = data.data.values.map(branch => branch.displayId)
         }
         else res.status(500).send(err);
+        res.end();
     })
         .catch(err => {
             res.status(500).send(err);
+            res.end();
         });
     for (var i = 0; i < branchIds.length; i++) {
         await axios({
@@ -65,7 +67,7 @@ async function getProgress(req, res) {
             else commits.push({})
         })
     }
-    res.json({ commits: commits });
+    if (commits.length) res.json({ commits: commits });
 }
 
 module.exports = { get, getCommits, getProgress };

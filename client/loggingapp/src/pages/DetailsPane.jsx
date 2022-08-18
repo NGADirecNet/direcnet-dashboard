@@ -7,10 +7,12 @@ import { FaRegCalendarAlt } from 'react-icons/fa'
 import { HiOutlineLocationMarker } from 'react-icons/hi'
 import { RiTimeLine } from 'react-icons/ri'
 import { gridTestStatus } from '../data/dashLogos'
+import { useStateContext } from '../contexts/ContextProvider'
 
 // encapsulates everything in more details part of a TestView page
 export default function DetailsPane({ test, setTest, saved, setSaved, deleteTest, isNew=false }) {
 
+    const { dashInfo } = useStateContext();
     const [dateEditMode, setDateEditMode] = useState(false);
     const [dateObj, setDateObj] = useState();
 
@@ -22,11 +24,6 @@ export default function DetailsPane({ test, setTest, saved, setSaved, deleteTest
 
     const [confirmDelete, setConfirmDelete] = useState(false);
 
-    //todo allow for adding a new location
-    const locationItems = [
-        "Rome, NY",
-        "Stockbridge, NY",
-    ]
 
     const statusItems = [
         { "Name": "Completed", "value": "completed" },
@@ -50,7 +47,7 @@ export default function DetailsPane({ test, setTest, saved, setSaved, deleteTest
     }
 
     const fieldChange = (event, field) => {
-        if (field === 'status' || field === 'location') {
+        if (field === 'status') {
             setTest({
                 ...test,
                 [field]: event.itemData.value
@@ -75,7 +72,7 @@ export default function DetailsPane({ test, setTest, saved, setSaved, deleteTest
     // specify whether we are looking in locationItems or statusItems
     const getPlaceholder = (value, type) => {
         const find = type === 'loc' ?
-            locationItems.find(o => o.value === value) :
+            dashInfo.locations.find(o => o.name === value) :
             statusItems.find(o => o.value === value)
         return find ? find["Name"] : value
     }
@@ -143,16 +140,16 @@ export default function DetailsPane({ test, setTest, saved, setSaved, deleteTest
                 <div className='w-1/4' onClick={() => setLocEditMode(true)}>
                     {locEditMode ?
                         (<DropDownListComponent
-                            dataSource={locationItems}
-                            fields={{ text: 'Name' }}
-                            placeholder={getPlaceholder(test.location, 'loc')}
+                            dataSource={dashInfo.locations}
+                            fields={{ text: 'name', value: 'name' }}
+                            placeholder={test.location}
                             change={(event) => fieldChange(event, "location")}
                             ref={(drop) => setLocObj(drop)}
                             created={() => locObj.focusIn(true)}
                             blur={() => setLocEditMode(false)}
                         />) :
                         (<p>
-                            {getPlaceholder(test.location, 'loc') || "Select Location"}
+                            {test.location || "Select Location"}
                         </p>)
                     }
                 </div>
