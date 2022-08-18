@@ -16,7 +16,7 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
     // by default keep timeline opened
     const [showMoreTimeline, setShowTimeline] = useState(true);
     // by default keep attachments hidden until user wants to see
-    const [showAttach, setShowAttach] = useState(false);
+    const [showAttach, setShowAttach] = useState(true);
     // by default keep the entire pane rendered until user would like to hide it
     const [showPane, setShowPane] = useState(true);
     // show or hide the option to add a new node to setup portion of the Pane
@@ -261,14 +261,14 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
                         </div>
                     </div>
                 )}
-                {pane.attachments && (
+                
                     <div className='flex gap-3'>
                         {<DropdownButton state={showAttach} setState={setShowAttach} />}
                         <div className='w-full'>
                             <p className='font-semibold text-`sm'>Attachments:</p>
-                            {showAttach && (
-                                <>
-                                    {pane.attachments.length && pane.attachments.map((m, i) => {
+                            {showAttach && (<>
+                                    {(!pane || !pane.attachments || !pane.attachments.length) && <AddButton onClick={(e) => updatePane(e, 'addAttach')} />}
+                                    {(pane.attachments && pane.attachments.length) ? pane.attachments.map((m, i) => {
                                         const attachProp = (<PaneAttachment
                                             attachment={m}
                                             nameOnChange={(e) => updateAttach(e, 'name', i)}
@@ -286,12 +286,10 @@ export default function TestPane({ scenario, isSelected, setSelected, isNewPane 
                                                 </div>
                                             )
                                         else return (attachProp);
-                                    })}
-                                </>
-                            )}
+                                    }) : (<></>)}
+                            </>)}
                         </div>
                     </div>
-                )}
             </>)}
         </div>
     )

@@ -12,12 +12,14 @@ const dropdownItems = [
     { "Name": "DEMO", "value": "demo" }
 ]
 
-const TestHeader = ({ category, categoryChange, title, titleChange, showMore, setShowMore, saved, saveChanges, hasDetails = true, disableChange = false }) => {
+const TestHeader = ({ category, categoryChange, title, titleChange, showMore, setShowMore, saved, saveChanges, hasDetails = true, disableChange = false, hasRemoveButton, deleteTest }) => {
     const [dropdown, setDropdown] = useState()
     const [editCategory, setEditCategory] = useState(false);
     const { currentColor } = useStateContext();
     const showDrop = () => setEditCategory(true)
     const hideDrop = () => setEditCategory(false)
+
+    const [confirmDelete, setConfirmDelete] = useState(false);
 
     const onCatChange = (event) => {
         categoryChange(event.itemData.value)
@@ -53,6 +55,23 @@ const TestHeader = ({ category, categoryChange, title, titleChange, showMore, se
 
             </div>
             <div className='space-y-1'>
+                {hasRemoveButton &&
+                    (confirmDelete ? (<button onBlur={() => setConfirmDelete(false)} onClick={deleteTest}
+                        style={{
+                            color: 'rgb(0, 194, 146)',
+                            backgroundColor: 'rgb(235, 250, 242)',
+                        }}
+                        className='font-bold border-1 border-green-600 p-2 rounded-lg'>
+                        Confirm Delete
+                    </button>)
+                        : (<button onClick={() => setConfirmDelete(true)}
+                            style={{
+                                color: 'rgb(228, 106, 118)',
+                                backgroundColor: 'rgb(255, 244, 229)',
+                            }}
+                            className='font-bold border-1 border-red-600 p-2 rounded-lg'>
+                            Delete Scene
+                        </button>))}
                 {hasDetails &&
                     <div
                         className='h-10 p-2 flex justify-center items-center gap-5 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray cursor-pointer border-1'

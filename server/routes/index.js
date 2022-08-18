@@ -98,7 +98,7 @@ router.post('/updateMap', (req, res) => {
   sceneService.update(req, res)
 })
 
-router.delete('/deleteMap/:id', (req, res) => {
+router.delete('/deleteMap/:_id', (req, res) => {
   sceneService.destroy(req, res)
 })
 

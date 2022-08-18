@@ -63,6 +63,8 @@ const MapsView = (props) => {
                     category={logo.Type}
                     disableChange
                     hasDetails={false}
+                    hasRemoveButton={!props.new}
+                    deleteTest={removeScene}
                     title={scene.name}
                     titleChange={(val) => {
                         setScene({
@@ -90,7 +92,6 @@ const MapsView = (props) => {
                         ])
                         navigate('/maps/' + res._id)
                     }
-
                 })
             // .catch(err => console.log("ERR", err));
         }
@@ -104,6 +105,16 @@ const MapsView = (props) => {
                         ])
                 });
         setSaved(true);
+    }
+
+    const removeScene = () => {
+        mapsApiService.destroy(scene)
+            .then(res => {
+                if (res) {
+                    setSceneMaps([...sceneMaps.filter(s => s._id !== scene._id )])
+                    navigate('/maps')
+                }
+            })
     }
 
     const goToNextAction = () => {

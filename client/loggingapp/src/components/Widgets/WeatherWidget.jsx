@@ -13,6 +13,8 @@ const WeatherWidget = () => {
     const { dashInfo } = useStateContext();
     const { daily, current, hourly } = useWeatherContext();
 
+    console.log("daily", daily)
+
     /**
      * Returns frequently used circular icon button
      * @param {*} color - icon color
@@ -44,10 +46,30 @@ const WeatherWidget = () => {
      * @returns - icon and text component display
      */
     const getDay = (color, background, icon, text) => {
+
         return (
             <div>
                 {getButtonIcon(color, background, icon)}
                 <p className='text-sm text-center font-semibold'>{text}</p>
+            </div>
+        )
+    }
+
+    const getWeeklyDay = (day, color, background, icon, text) => {
+        const suitable = '#8BE78B';
+        const questionable = '#FEC90F';
+        const unsuitable = 'rgb(228, 106, 118)';
+        let c = suitable;
+        if (day.clouds > 75) c = questionable;
+        if (day.pop > .3) c = unsuitable;
+        if (day.weather[0].description.includes('rain')) c = unsuitable;
+        return (
+            <div>
+                {getButtonIcon(color, background, icon)}
+                <div className='flex gap-1 items-center'>
+                    <p style={{ background: c }} className="rounded-full h-2 w-2" />
+                    <p className='text-sm text-center font-semibold'>{text}</p>
+                </div>
             </div>
         )
     }
@@ -164,7 +186,10 @@ const WeatherWidget = () => {
                         {/* todo exclude weekend days */}
                         {daily && daily.map((d, idx) => {
                             if (idx > 4) return <></>;
-                            return <div key={idx}>{getDay("gray", "", apiIcon.find(i => i.name === d.weather[0].icon.slice(0, 2)).icon, days[new Date(d.dt * 1000).getUTCDay()].slice(0, 3))}</div>
+                            return (
+                                <div key={idx}>
+                                    {getWeeklyDay(d, "gray", "", apiIcon.find(i => i.name === d.weather[0].icon.slice(0, 2)).icon, days[new Date(d.dt * 1000).getUTCDay()].slice(0, 3))}
+                                </div>)
                         })}
                     </div>
                 </div>

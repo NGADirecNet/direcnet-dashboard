@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { MapsComponent, LayersDirective, LayerDirective, MarkersDirective, MarkerDirective, Inject, Marker, MapsTooltip, NavigationLine, NavigationLineDirective, NavigationLinesDirective } from '@syncfusion/ej2-react-maps'
+import { useStateContext } from '../contexts/ContextProvider';
 
 const Map = (props) => {
+    const { activeMenu } = useStateContext();
     const [scene, setScene] = useState(null);
     const [map, setMap] = useState();
     const [resizing, setResizing] = useState(true);
@@ -23,7 +25,7 @@ const Map = (props) => {
     useEffect(() => {
         setResizing(true)
         setMap(null)
-    }, [props.onResize])
+    }, [props.onResize, activeMenu])
     
     useEffect(() => {
         setResizing(false);
