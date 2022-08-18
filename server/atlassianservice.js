@@ -37,6 +37,7 @@ function getCommits(req, res) {
 async function getProgress(req, res) {
     let branchIds = [];
     let commits = [];
+    let resSent = false;
     // takes latest 5 branches and queries all the recent commits from them
     await axios({
         method: "get",
@@ -48,12 +49,14 @@ async function getProgress(req, res) {
         if (data && data.data && data.data.values) {
             branchIds = data.data.values.map(branch => branch.displayId)
         }
-        else res.status(500).send(err);
-        res.end();
+        else {
+            res.status(500).send(err);
+            resSent = true;
+        }
     })
         .catch(err => {
             res.status(500).send(err);
-            res.end();
+            resSent = true;
         });
     for (var i = 0; i < branchIds.length; i++) {
         await axios({
@@ -67,7 +70,7 @@ async function getProgress(req, res) {
             else commits.push({})
         })
     }
-    if (commits.length) res.json({ commits: commits });
+    if (!resSent) res.json({ commits: commits });
 }
 
 module.exports = { get, getCommits, getProgress };

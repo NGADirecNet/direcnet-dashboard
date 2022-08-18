@@ -113,7 +113,7 @@ const WeatherWidget = () => {
                     </div>
                     <div className='flex gap-4 mt-4 justify-between items-center pb-3 border-b-1'>
                         <div className='flex gap-2'>
-                            {getButtonIcon("gray", "#FAFAFB", apiIcon.find(i => i.name === current.weather[0].icon.slice(0, 2)).icon)}
+                            {current && getButtonIcon("gray", "#FAFAFB", apiIcon.find(i => i.name === current.weather[0].icon.slice(0, 2)).icon)}
                             <div>
                                 <p className="text-md font-semibold">{current && current.temp.toString().slice(0, 2) + '°'}</p>
                                 <p className="text-sm text-gray-400">Feels Like: {current && current.feels_like.toString().slice(0, 2) + '°'}</p>
