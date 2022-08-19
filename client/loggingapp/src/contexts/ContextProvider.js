@@ -71,22 +71,6 @@ export const ContextProvider = ({ children }) => {
             })
     }, [])
 
-    // useEffect(() => {
-    //     console.log("tests updated, ", tests)
-    // }, [tests])
-
-    // useEffect(() => {
-    //     console.log("cal updated", cal)
-    // }, [cal])
-
-    // useEffect(() => {
-    //     console.log("current demo updated - ", currentDemo)
-    // }, [currentDemo])
-
-    // useEffect(() => {
-    //     console.log("PROGRESS updated", progress)
-    // }, [progress])
-
     return (
         <StateContext.Provider
             value={{

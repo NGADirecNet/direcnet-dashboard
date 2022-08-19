@@ -13,8 +13,6 @@ const WeatherWidget = () => {
     const { dashInfo } = useStateContext();
     const { daily, current, hourly } = useWeatherContext();
 
-    console.log("daily", daily)
-
     /**
      * Returns frequently used circular icon button
      * @param {*} color - icon color

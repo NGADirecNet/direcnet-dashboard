@@ -7,7 +7,6 @@ import { HiOutlineSwitchHorizontal } from 'react-icons/hi';
 const HourlyChart = () => {
     const { hourly } = useWeatherContext();
     const { currentColor } = useStateContext();
-    console.log("hourly", hourly)
 
     // hourly with unix to utc tim and pop to percentage
     const [chartHourly, setChartHourly] = useState([]);

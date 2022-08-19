@@ -24,10 +24,6 @@ const CalendarWidget = () => {
     const [eventsInRange, setEventsInRange] = useState([])
     const [recObj, setRecObj] = useState();
 
-    // useEffect(() => {
-    //     console.log("rec object", recObj)
-    // }, [recObj])
-
     useEffect(() => {
         if (dateRange.startDate === null || dateRange.endDate === null)
             setDateRange({
@@ -37,10 +33,6 @@ const CalendarWidget = () => {
             })
         setEventsInRange(filterCal());
     }, [cal, dateRange])
-
-    // useEffect(() => {
-    //     console.log("filtered cal", eventsInRange)
-    // }, [eventsInRange])
 
     function getNextRecurDate(event) {
         const start = new Date(event.StartTime)

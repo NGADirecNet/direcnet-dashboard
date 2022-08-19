@@ -26,10 +26,6 @@ const RecentWidget = () => {
         )
     }, [currFilter, tests])
 
-    // useEffect(() => {
-    //     console.log("fil", filteredTests)
-    // }, [filteredTests])
-
     return (
         <div className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg p-6 rounded-2xl">
             <div className="flex justify-between items-center gap-2">

@@ -47,7 +47,6 @@ const TestView = (props) => {
 
     // default selected scenario to the first test in the timeline
     useEffect(() => {
-        // console.log("test", test)
         setTestType(type)
         // if current sel scenario no longer exists, relocate to the first one again or set to null
         if (test.timeline) {

@@ -86,7 +86,7 @@ const Weather = () => {
                                         <HourlyChart />
                                     </div>
                                 </div>
-                                <div className='mt-2 grid grid-rows-2 grid-flow-col gap-2'>
+                                <div className='mt-2 grid grid-rows-2 grid-flow-col gap-2 auto-cols-fr'>
                                     <div className='flex p-4 border-1 rounded-lg shadow-md'>
                                         <div className='w-1/2 h-36'>
                                             <p className='mx-1 py-2 font-semibold'>Precipitation</p>
@@ -133,13 +133,13 @@ const Weather = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className='w-full lg:w-1/3 p-4 border-1 rounded-lg shadow-md'>
+                            <div className='w-full lg:w-1/3 p-4 border-1 rounded-lg shadow-md h-660'>
                                 {daily.map((d, i) => {
                                     // exclude today
                                     if (i === 0) return <></>
                                     const day = unixToDate(d.dt);
                                     return (
-                                        <div className='flex items-center py-4 m-2 justify-between'>
+                                        <div className='flex items-center py-3 m-2 justify-between'>
                                             <div className='w-24'>
                                                 <p className='font-semibold py-1'>{days[day.getUTCDay()]}</p>
                                                 <p className='text-gray-400'>{day.getDate()} {day.toLocaleString('default', { month: 'long' }).slice(0, 3)}</p>
