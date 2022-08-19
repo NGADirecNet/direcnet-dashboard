@@ -140,7 +140,7 @@ const MapsView = (props) => {
 
             <div className='flex gap-2 flex-wrap lg:flex-nowrap justify-center'>
                 {/* Left column */}
-                <div className='lg:w-2/3'>
+                <div className='w-full lg:w-2/3'>
                     {(scene &&scene.actions) && scene.actions.map((action, idx) =>
                         <MapsPane
                             action={action}
@@ -165,7 +165,7 @@ const MapsView = (props) => {
                     />
                 </div>
                 {/* Right Column */}
-                <div className='lg:w-1/3 flex-col'>
+                <div className='w-full lg:w-1/3 flex-col'>
                     <div className='h-96 my-2'>
                         {(scene && scene.actions.length) ? ( 
                         <div className='border-1 rounded-2xl p-1'>

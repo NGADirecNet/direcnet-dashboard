@@ -57,30 +57,30 @@ export default function MapMarkerInfo({ info, remove, scene, setScene, idx, pane
         >
             <EditableTextField
                 placeholder={info.dataSource[0].nodeInfo.name}
-                className='p-1 font-semibold w-1/2'
+                className='m-1 p-1 font-semibold w-1/4'
                 onChange={(e) => fieldChange(e, 'name')}
             />
-            <div className='flex'>
-                <div>
-                    <div className='flex gap-1 items-center p-3'>
+            <div className='flex w-full'>
+                <div className='w-1/4'>
+                    <div className='gap-1 items-center p-1'>
                         <p className='font-semibold'>Latitude:</p>
                         <EditableTextField
                             placeholder={info.dataSource[0].latitude}
-                            className='p-1 w-1/2'
+                            className='p-1 w-full'
                             onChange={(e) => fieldChange(e, 'latitude')}
                         />
                     </div>
-                    <div className='flex gap-1 items-center p-3'>
+                    <div className='gap-1 items-center p-1'>
                         <p className='font-semibold'>Longitude:</p>
                         <EditableTextField
                             placeholder={info.dataSource[0].longitude}
-                            className='p-1'
+                            className='p-1 w-full'
                             onChange={(e) => fieldChange(e, 'longitude')}
                         />
                     </div>
                 </div>
-                <div>
-                    <div className='flex gap-1 items-center p-3'>
+                <div className='w-1/4'>
+                    <div className='gap-1 items-center p-1'>
                         <p className='font-semibold'>Width:</p>
                         <EditableTextField
                             placeholder={info.width}
@@ -88,7 +88,7 @@ export default function MapMarkerInfo({ info, remove, scene, setScene, idx, pane
                             onChange={(e) => fieldChange(e, 'width')}
                         />
                     </div>
-                    <div className='flex gap-1 items-center p-3'>
+                    <div className='gap-1 items-center p-1'>
                         <p className='font-semibold'>Height:</p>
                         <EditableTextField
                             placeholder={info.height}
@@ -97,40 +97,38 @@ export default function MapMarkerInfo({ info, remove, scene, setScene, idx, pane
                         />
                     </div>
                 </div>
-            </div>
-            <div className='flex'>
-                <div>
-                    <div className='flex gap-1 items-center p-3'>
-                        <p className='font-semibold'>Shape:</p>
+                <div className='w-1/4'>
+                    <div className='gap-1 items-center p-1'>
+                        <p className='font-semibold text-center'>Shape:</p>
                         <Dropdown
                             data={['Diamond', 'Circle', 'Rectangle', 'Triangle', 'InvertedTriangle', 'Pentagon']}
                             onChange={(e) => fieldChange({ value: e }, 'shape')}
                             defaultValue={info.shape}
                         />
                     </div>
-                    <div className='flex gap-1 items-center p-3'>
-                        <p className='font-semibold'>Fill Color:</p>
+                    <div className='gap-1 items-center p-1'>
+                        <p className='font-semibold text-center'>Fill Color:</p>
                         <EditableTextField
                             placeholder={info.fill}
-                            className='p-1'
+                            className='p-1 text-center'
                             onChange={(e) => fieldChange(e, 'fill')}
                         />
                     </div>
                 </div>
-                <div>
-                    <div className='flex gap-1 items-center p-3'>
-                        <p className='font-semibold'>Border Width:</p>
+                <div className='w-1/4'>
+                    <div className='gap-1 items-center p-1'>
+                        <p className='font-semibold text-center'>Border Width:</p>
                         <EditableTextField
                             placeholder={info.border.width}
-                            className='p-1'
+                            className='p-1 text-center'
                             onChange={(e) => fieldChange(e, 'borderwidth')}
                         />
                     </div>
-                    <div className='flex gap-1 items-center p-3'>
-                        <p className='font-semibold'>Border Color</p>
+                    <div className='gap-1 items-center p-1'>
+                        <p className='font-semibold text-center'>Border Color</p>
                         <EditableTextField
                             placeholder={info.border.color}
-                            className='p-1'
+                            className='p-1 text-center'
                             onChange={(e) => fieldChange(e, 'bordercolor')}
                         />
                     </div>

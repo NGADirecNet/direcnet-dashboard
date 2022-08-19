@@ -2,54 +2,72 @@ import React, { useEffect, useState } from 'react';
 import { ChartComponent, SeriesCollectionDirective, SeriesDirective, Inject, LineSeries, DateTime, Legend, Tooltip } from '@syncfusion/ej2-react-charts';
 import { useWeatherContext } from '../../contexts/WeatherContextProvider';
 import { useStateContext } from '../../contexts/ContextProvider';
-
-export let data1 = [
-    { x: new Date(2005, 0, 1), y: 21 }, { x: new Date(2006, 0, 1), y: 24 },
-    { x: new Date(2007, 0, 1), y: 36 }, { x: new Date(2008, 0, 1), y: 38 },
-    { x: new Date(2009, 0, 1), y: 54 }, { x: new Date(2010, 0, 1), y: 57 },
-    { x: new Date(2011, 0, 1), y: 70 }
-];
+import { HiOutlineSwitchHorizontal } from 'react-icons/hi';
 
 const HourlyChart = () => {
     const { hourly } = useWeatherContext();
     const { currentColor } = useStateContext();
-    
-    // hourly with unix to utc tim 
+    console.log("hourly", hourly)
+
+    // hourly with unix to utc tim and pop to percentage
     const [chartHourly, setChartHourly] = useState([]);
+
+    // switch between hourly temp select and hourly pop select
+    const [temp, setTemp] = useState(false);
 
     useEffect(() => {
         if (hourly.length) {
-            setChartHourly(hourly.map(h => {return {...h, dt: h.dt * 1000} }))
+            setChartHourly(hourly.map(h => { return { ...h, dt: h.dt * 1000, pop: h.pop * 100 } }))
         }
     }, [hourly])
 
+    const yAxis = temp ? {
+        labelFormat: '{value}°',
+        rangePadding: 'None',
+        // minimum: -10,
+        // maximum: 100,
+        // interval: 20,
+        lineStyle: { width: 0 },
+        majorTickLines: { width: 0 },
+        minorTickLines: { width: 0 }
+    } : {
+        labelFormat: '{value}%',
+        rangePadding: 'None',
+        lineStyle: { width: 0 },
+        majorTickLines: { width: 0 },
+        minorTickLines: { width: 0 }
+    }
+
 
     return (
-        <ChartComponent id='charts' style={{ textAlign: "center" }} primaryXAxis={{
-            valueType: 'DateTime',
-            labelFormat: 'MM/dd h:mm',
-            intervalType: 'Hours',
-            edgeLabelPlacement: 'Shift',
-            majorGridLines: { width: 0 }
-        }} 
-        primaryYAxis={{
-            labelFormat: '{value}°',
-            rangePadding: 'None',
-            minimum: -10,
-            maximum: 100,
-            interval: 20,
-            lineStyle: { width: 0 },
-            majorTickLines: { width: 0 },
-            minorTickLines: { width: 0 }
-        }} 
-        palettes={[currentColor]}
-        chartArea={{ border: { width: 0 } }} tooltip={{ enable: true }} title='Hourly Temp.' height='250px'>
-            <Inject services={[LineSeries, DateTime, Legend, Tooltip]} />
-            <SeriesCollectionDirective>
-                <SeriesDirective dataSource={chartHourly} xName='dt' yName='temp' width={2} marker={{ visible: true, width: 2, height: 2 }} type='Line'>
-                </SeriesDirective>
-            </SeriesCollectionDirective>
-        </ChartComponent>
+        <div>
+            <p className='text-center font-semibold text-hii'>{'Hourly ' + (temp ? 'Temp.' : 'Precip. Chance')}</p>
+            <ChartComponent id='charts' style={{ textAlign: "center" }} primaryXAxis={{
+                valueType: 'DateTime',
+                labelFormat: 'MM/dd h:mm',
+                intervalType: 'Hours',
+                edgeLabelPlacement: 'Shift',
+                majorGridLines: { width: 0 }
+            }}
+                primaryYAxis={yAxis}
+                palettes={[currentColor]}
+                chartArea={{ border: { width: 0 } }} tooltip={{ enable: true }} height='200px'>
+                <Inject services={[LineSeries, DateTime, Legend, Tooltip]} />
+                <SeriesCollectionDirective>
+                    <SeriesDirective dataSource={chartHourly} xName='dt' yName={temp ? 'temp' : 'pop'} width={2} marker={{ visible: true, width: 2, height: 2 }} type='Line'>
+                    </SeriesDirective>
+                </SeriesCollectionDirective>
+            </ChartComponent>
+            <div className='text-center'>
+                <button
+                    type='button'
+                    className='p-2 text-hii justify-center border-1 rounded-lg border-white hover:border-gray-200'
+                    onClick={() => setTemp(prev => !prev)}
+                >
+                    <HiOutlineSwitchHorizontal />
+                </button>
+            </div>
+        </div>
     );
 };
 

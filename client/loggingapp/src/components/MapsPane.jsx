@@ -155,21 +155,21 @@ export default function MapsPane({ action, isSelected, setSelected, isNewPane = 
                     <DropdownButton state={showLatLongZoom} setState={setShowLatLongZoom} />
                     {showLatLongZoom ? (<>
                         <div>
-                            <div className='flex gap-1'>
+                            <div className='flex gap-1 items-center'>
                                 <p className='font-semibold'>Latitude: </p>
                                 <EditableTextField
                                     placeholder={pane.mapCenter ? pane.mapCenter.latitude : 'Lat'}
                                     onChange={(e) => fieldChange(e, 'latitude')}
                                 />
                             </div>
-                            <div className='flex gap-1'>
+                            <div className='flex gap-1 items-center'>
                                 <p className='font-semibold'>Longitude: </p>
                                 <EditableTextField
                                     placeholder={pane.mapCenter ? pane.mapCenter.longitude : 'Long'}
                                     onChange={(e) => fieldChange(e, 'longitude')}
                                 />
                             </div>
-                            <div className='flex gap-1'>
+                            <div className='flex gap-1 items-center'>
                                 <p className='font-semibold'>Zoom Factor: </p>
                                 <EditableTextField
                                     placeholder={pane.zoomFactor}

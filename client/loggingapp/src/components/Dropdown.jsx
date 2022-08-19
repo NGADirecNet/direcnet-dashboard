@@ -15,7 +15,7 @@ const defaultDropdownData = [
   },
 ];
 
-const Dropdown = ({ currentMode, fields = null, data = null, width = null, defaultValue=null, onChange=null }) => {
+const Dropdown = ({ currentMode, fields = null, data = null, width = null, defaultValue = null, onChange = null }) => {
   const [value, setValue] = useState(defaultValue)
   useEffect(() => {
     onChange && onChange(value)

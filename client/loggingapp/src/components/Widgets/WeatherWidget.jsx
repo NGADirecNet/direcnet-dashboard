@@ -61,8 +61,9 @@ const WeatherWidget = () => {
         const unsuitable = 'rgb(228, 106, 118)';
         let c = suitable;
         if (day.clouds > 75) c = questionable;
+        if (day.weather[0].description.includes('light')) c = questionable;
         if (day.pop > .3) c = unsuitable;
-        if (day.weather[0].description.includes('rain')) c = unsuitable;
+        if (day.weather[0].description.includes('thunderstorm')) c = unsuitable;
         return (
             <div>
                 {getButtonIcon(color, background, icon)}
@@ -93,10 +94,12 @@ const WeatherWidget = () => {
             if ((max > .1) && (max < .3)) status = { ...questionable };
             // if max wind speed in next 6 hours is > 10mph or max wind gust is > 20mph then we are questionable
             if ((maxWind > 10) || (maxGust > 20)) status = { ...questionable };
+            // if pop includes 'light' we are questionable
+            if (daily[0].weather[0].description.includes('light')) status = { ...questionable };
             // if avg of next 6 hours pop is > 30% we are unsuitable
             if (average > .3) status = { ...unsuitable };
             // if pop > 50% or daily status is rain we are also unsuitable
-            if (daily.pop > .5 || daily[0].weather[0].description.includes('rain')) status = { ...unsuitable };
+            if (daily.pop > .5 || daily[0].weather[0].description.includes('thunderstorm')) status = { ...unsuitable };
             // otherwise we will remain suitable
         }
 
@@ -164,7 +167,7 @@ const WeatherWidget = () => {
                             <p className="text-md font-semibold">Hourly</p>
                         </div>
                     </div>
-                    <div className='flex gap-4 mt-4 justify-center items-center px-1 pb-3 border-b-1 w-full overflow-x-scroll'>
+                    <div className='flex gap-4 mt-4 px-1 pb-3 border-b-1 w-full overflow-x-scroll'>
                         {/* todo exclude weekend days */}
                         {hourly && hourly.map((d, idx) => {
                             if (idx > 12) return <></>;
